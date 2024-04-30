@@ -1,0 +1,192 @@
+%-----------------------------------------------%
+%   Vorlage Abschlussarbeit HTWK Leipzig        %
+%                                               %
+%        Der Code wird unter der Lizenz         %
+%   „Creative Commons Namensnennung-Weitergabe  %
+%   unter gleichen Bedingungen“ in Version 4.0  % 
+%   (abgekürzt „CC-by-sa 4.0“) veröffentlicht.  %
+%   _________________________________________   %
+%-----------------------------------------------%
+
+
+
+% Dokumentenklasse %
+\documentclass[
+ngerman,
+toc=flat,
+toc=chapterentrywithdots,
+captions=tableabove,
+listof=entryprefix,
+listof=leveldown,
+fontsize=11pt,
+numbers=noenddot,
+parskip=half,
+headsepline,
+footsepline,
+footheight=20pt,
+headheight=20pt,
+usegeometry,
+]{scrreprt}
+
+
+%doesnt work yet. should indent ToC
+\makeatletter
+ \renewcommand*\l@section{\@dottedtocline{1}{0.5em}{2.3em}}
+ \renewcommand*\l@subsection{\@dottedtocline{2}{1.0em}{3.2em}}
+ \renewcommand*\l@subsubsection{\@dottedtocline{3}{2.0em}{4.1em}}
+\makeatother
+
+% Laden der Pakete %
+\usepackage{babel}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+\geometry{
+	includeheadfoot,
+	top = 20mm,
+	left = 25mm,
+	right = 20mm, 
+	bottom = 30mm,
+	bindingoffset = 5mm,
+	}
+\usepackage{pdflscape} % for using landscape on pages
+\usepackage{tabularx} % for tables to make them textwidth
+\usepackage[letterspace=150]{microtype}
+\usepackage[onehalfspacing]{setspace}
+
+\BeforeStartingTOC[toc]{\singlespacing} 
+\BeforeStartingTOC[lot]{\singlespacing\renewcommand\autodot{:}}
+\BeforeStartingTOC[lof]{\singlespacing\renewcommand\autodot{:}}
+
+
+
+\usepackage{enumitem}  %denser itemize
+\setlist{nosep}  % or \setlist{noitemsep} to leave space around whole list
+
+
+\usepackage[
+    backend=biber,
+    style=numeric-comp,
+    sorting=none,
+    defernumbers=true
+]{biblatex}
+
+
+\addbibresource{Hilfsdateien/literatur.bib}
+
+\usepackage{csquotes}
+
+\usepackage{scrlayer-scrpage}
+\clearpairofpagestyles
+\chead{{--~}\pagemark{~--}}
+
+\renewcommand*{\chapterpagestyle}{scrheadings}
+
+\RedeclareSectionCommand[%
+  beforeskip=0pt
+]{chapter}
+
+\RedeclareSectionCommands[%
+  beforeskip=0pt,
+  afterskip=1pt plus .1\baselineskip minus .167\baselineskip
+]{section,subsection}
+
+\input{Hilfsdateien/01Daten}
+
+\usepackage{pdfpages}
+
+%\usepackage{siunitx}
+%\sisetup{
+%    locale=DE,
+%    per-mode=fraction,
+%}
+
+\input{Hilfsdateien/06Anhangsverzeichnis}
+
+
+\usepackage{acro}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+
+\newcommand\tdo[1]{\textcolor{red}{#1}}
+%\usepackage{siunitx}
+
+
+
+
+\usepackage{hyperref}
+\hypersetup{
+    pdfauthor=\autor,
+    pdfsubject=\arbeit,
+    plainpages=false
+}
+
+% Beginn des Dokumentes %
+\begin{document}
+
+
+\input{Hilfsdateien/02Titelseite}
+\newpage\null\thispagestyle{empty}\newpage
+\newpage\null\thispagestyle{empty}\newpage
+\input{Hilfsdateien/04Erklaerung}
+\newpage\null\thispagestyle{empty}\newpage
+
+\input{Hilfsdateien/08Verschwigenheitsklausel}
+\newpage\null\thispagestyle{empty}
+\thispagestyle{empty}
+\quad
+\addtocounter{page}{-1}
+\input{Hilfsdateien/03Abstract}
+\newpage\null\thispagestyle{empty}
+\tableofcontents
+
+
+
+%_____________________________________________________
+
+\pagenumbering{Roman}
+\newpage
+\addchap{Abbildungsverzeichnis}
+\listoffigures
+\newpage
+\addchap{Tabellenverzeichnis}
+\listoftables
+\newpage
+\pagenumbering{arabic}
+
+%
+
+
+\newpage\null\thispagestyle{empty}
+\thispagestyle{empty}
+\quad
+\addtocounter{page}{-1}
+\input{Kapitel/01Introduction}
+\input{Kapitel/02Grundlagen}
+\input{Kapitel/03Defektübersicht}
+\input{Kapitel/04Ansatz}
+\input{Kapitel/05Experiments}
+\input{Kapitel/06Results}
+\input{Kapitel/07Diskusion}
+\input{Kapitel/08ZusammenfassungAusblick}
+
+\begin{singlespacing}
+\printbibliography
+\end{singlespacing}
+
+\newpage
+\thispagestyle{empty}
+\quad
+
+
+
+
+
+\end{document}

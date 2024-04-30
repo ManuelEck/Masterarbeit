@@ -1,0 +1,171 @@
+
+%-----------------------------------------------------------------
+\clearpage
+
+\chapter{Experimentalteil}
+\label{chap:experiments}
+
+\section{Gestaltung der Experimente}
+
+
+In dieser Thesis wurde ein Überwachtes und drei Unüberwachte Modelle auf einem erstellten Datensatz trainiert, um Waferdefekte anhand von Photolumineszenz Messungen zu detektieren. Abbildung \ref{fig:experimentoverview} zeigt den Prozess des Experiments. Nach der Aufbereitung des Datensatzes werden für das Unüberwachte Modell Annotationen erstellt. Darauf folgend werden alle Modelle entsprechend ihrer Konfigurationen Trainiert. Im Anschluss werden die Modelle ausgewertet und mit einander verglichen. 
+  
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\linewidth]{Graphiken/Experiments/experimentOverview}
+	\caption{Übersicht des Experiments mit verschiedenen Modellen}
+	\label{fig:experimentoverview}
+\end{figure}
+
+
+
+
+%-----------------------------------------------
+\section{Datensatz}  
+
+\subsection{Datensatz Überblick}
+
+Für die verschiedenen Modelle wurde ein Datensatz erstellt. Dieser teilt sich auch in einen Unüberwachten Datensatz, welcher Daten mit verschiedenen Waferrezepten enthält und ein Überwachten Datensatz, welcher eine Teilmenge des Unüberwachten Datensatzes, mit händisch generierten Annotationen, widerspiegelt. Ein Überblick über die Anzahl der verwendeten Proben und den Verwendungszweck der Datensatzteile ist in Tabelle \ref{tab:ds_overview} gezeigt.
+
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lllcl@{}}
+		\toprule
+%		\rowcolor[rgb]{0.784,0.757,0.757}
+				& \textbf{Proben} & \textbf{Annotationen} & \textbf{Bildgröße} & \textbf{Modell} \\ \midrule
+		DS\_uns & 4279   & 0            & 1024x1024 & DINO, STEGO, STEgeo \\
+		DS\_sup & 60     & 60           & 1024x1024 & U-Net \\ \bottomrule
+	\end{tabular}
+	\caption{Überblick des Datensatzes und verwendeten Modelle}
+	\label{tab:ds_overview}
+\end{table}
+
+Eine Gegenüberstellung einer Probe ist in Abbildung \ref{fig:ds_sup} zu sehen. Dabei ist auf der linken Seite die Photolumineszenz Messung und auf der Rechten Seite die Annotationen der einzelnen Klassen auf Pixel Ebene. Eine Aufschlüsselung der Farben mit entsprechenden Klassen ist in Tabelle \ref{tab:classColor} gegeben. Die Annotationen wurden mit einem internen Labeling Werkzeug \ref{fig:phillepalle} des Fraunhofer ISE  erstellt und im Anschluss von Kantenpunkten der einzelnen Klassen zu Flächenkarten in welcher jeder Pixel einer Klasse zugeordnet ist umgewandelt.  
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.6\linewidth]{Graphiken/Experiments/phillepalle}
+	\caption{Erstellungsprozess der Annotationen mit Fraunhofer ISE internem Werkzuge}
+	\label{fig:phillepalle}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.75\linewidth]{Graphiken/Experiments/dataset_example/106761_FWIS-PLI_230206175614_106761_aligned_combined.png}
+	\caption{Datenpaar aus Datensatz \textit{DS\textunderscore sup}}
+	\label{fig:ds_sup}
+\end{figure}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{ll}
+		\toprule
+		 	\textbf{Klasse} & 	\textbf{Farbe}   \\ 
+		\midrule \midrule
+			Greifer außen  	& 	Blau \\ 
+			Greifer innen 	& 	Hellblau  \\ 
+			Transportband  	& 	Dunkelblau  \\
+			Positionierer 	&  	Rot \\
+			Ripple   		&  	Gelb     \\
+			Randdefekt		&   Grün   \\
+			Risse/Sonstiges	& 	Orange \\
+			Wafer 			&   Schwarz     \\
+		\bottomrule
+	\end{tabular}
+	\caption{Überblick der Klassen mit korrespondierenden Farben in den Annotationen
+	}
+	\label{tab:classColor}
+\end{table}
+
+Der Datensatz \textit{$DS_{uns}$} besteht aus 4279 Proben welche mittels einer Photolumineszenz Messung aufgenommen wurden. Die Messungen wurden einer Vorverarbeitung, wie in Kapitel \ref{experimentalteil:vorverarbeitung} beschrieben, unterzogen. Für alle verwendeten Modelle wurden die Daten in einen Trainings- und  Validations-Teil aufgeteilt, mit respektive 3900 und 379 Messungen. \\
+Der Datensatz \textit{$DS_{sup}$} besteht aus 60 Photolumineszenz Messungen. Diese Messungen wurden ebenfalls einer Vorverarbeitung, welche eine Korrektur der Verzerrung, Verzeichnung und Alinierung beinhaltet, unterzogen. Der Datensatz ist in einen Trainingsteil mit 50 Messungen und einen Validationsteil mit 10 Messungen unterteilt. Als Testdaten werden hier Proben aus dem Datensatz \textit{$DS_{uns}$} verwendet. \\
+Die Daten des Datensatz \textit{$DS_{sup}$} bestehen aus einem Datenpaar, bestehend aus der Photolumineszenz Messung und einer entsprechend angefertigten Pixelweisen Annotation.
+%---------------------------------------------------------------------------------
+   
+
+\iffalse
+\begin{table}[h!]
+	\centering   
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		{Dataset} &  Bildanzahl & Größe & Annotationen \\
+		\hline
+		SHJ\textunderscore 1 & 2254& 1024px x 1024px & 0 \\
+		\hline
+		SHJ\textunderscore 2 & 1924& 1024px x 1024px & 0 \\
+		\hline
+		HJT\textunderscore 1 & 50 & 1024px x 1024px & 0 \\
+		\hline
+		HJT\textunderscore 2 & 50 & 1024px x 1024px & 0 \\
+		\hline
+		DS\textunderscore unsup & 4219 & 1024px x 1024px & 0\\
+		\hline
+		DS\textunderscore sup & 50 & 1024px x 1024px & 50 \\
+		\hline
+		DS\textunderscore test & 10 & 1024px x 1024px & 10 \\ 
+		\hline
+	\end{tabular}
+	\caption{Überblick über die verwendeten Datensätze}
+	\label{tab:dataset_overview}
+\end{table}
+\fi
+
+
+\subsection{Daten Vorverarbeitung}
+\ref{experimentalteil:vorverarbeitung}
+Die rohen Bilddaten sind mit Verzerrung, Verzeichnung und ungleicher Alinierung behaftet. Die Verzerrung und Verzeichnung kommt dabei aus der Apparatur, mit der die Messungen aufgenommen wurden. Die inkonsistente Alinierung hingegen durch händische Platzierung der Solarzelle unter dem Messgerät. Damit die Daten den zugrunde liegenden Wafern entsprechen, wurden diese Artefakte entfernt. Den Unterschied zwischen Rohbild und Aliniertem Bild ist in Abbildung \ref{fig:unallig_allig} zu sehen. \\
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.75\linewidth]{Graphiken/104490_FWIS-PLI_230206101015_104490_combined.png}
+	\caption{Unaliniertes Rohbild (links), welches Verzerrung und Verzeichnung aufweist und aliniertes Bild(rechts)}
+	\label{fig:unallig_allig}
+\end{figure}
+
+Um Messungen, welche möglichst Nahe an den Daten der realen Wafern sind, zu bekommen, wurden die Artifakte die durch die Messung erzeugt wurden negiert. Die Alinierung wurden über eine Erkennung der Waferkanten mit anschließender Entzerrung der Messung und Rotation des Bildes durchgeführt. Somit ist eine Darstellung die Näher an der Realität ist gewährleistet.
+
+\section{Segmentationsmodelle}
+\subsection{Überblick Netzwerktraining}
+	Die Überwachte Segmentation wird mit einem U-Net Modell und die Unüberwachte Segmentation mit den Modellen DINO, STEGO und STEgeo durchgeführt. Alle Modelle wurden mit den Vorverarbeiteten Daten trainiert. \\
+	Damit eine größere Variation der Daten gegeben ist, werden verschiedene Bildverarbeitungen im Trainingsprozess angewendet. Diese Vorverarbeitungsschritte sind wichtig um ein Neuronales Netzwerk effizient trainieren zu können. Innerhalb dieses Schrittes wurden folgende Daten Daten-Augmentationen vorgenommen.
+	 
+	\begin{itemize}
+		\item Bildgrößenänderung
+		\item Zufälliger Auswahl eines Bildausschnitts
+		\item Horizontales und vertikales Spiegeln
+		\item Helligkeit, Kontrast, Sättigung und Farbton
+		\item Batch-Normalisierung
+	\end{itemize} 
+	
+	Die hier aufgelisteten Verarbeitungsschritte werden auf den allinierten, entzerrten und entzeichneten Photolumineszenz Messungen ausgeführt. Wie in Abbildung \ref{label} gezeigt wird auf das Ausgangsbild ein zufälliger Bildausschnitt gewählt. Dieser hat entweder die Bildgröße mit der das Vortraining ausgeführt wurde oder beim Ende-zu-Ende Training eine Größe von 256 Pixel x 256 Pixel.
+	
+	Zusätzlich wurden die Daten vor dem Trainingsprozess Standardisiert. 
+	Dies Standardisierung wurde mittels Gleichung\ref{eq:norm} durchgeführt, in der 
+	\textit{x} das entsprechende Bild,  $\mu_{ x }$ der Mittelwert  und $\sigma_{x}$ die Standartabweichung. 
+	
+	\begin{equation}
+		x_{ norm } = \frac{ x - \mu_{ x }}{ \sigma _{x}}
+		\label{eq:norm}
+	\end{equation}
+
+
+	Alle Modelle wurden auf Nvidia Titan XP GPUs mit 12GB Speicher und Linux Debian Distribution 5.10.0 mit CUDA Version 11.7. 
+\subsection{Experiment 1: U-Net}
+	
+	Innerhalb diesem Experiment wurden einzelne Konfigurationen des U-Nets, wie in Kapitel \ref{ansatz:unet} beschrieben, mittels dem Datensatz $DS_sup$ trainiert. Diese 
+	exp1 -> standart U net
+	exp2 -> unet mit gewichtetem Loss
+	exp3 -> Encoder ausgetauscht mit Pretrained ResNet50d
+
+\subsection{Experiment 2: DINO}
+	exp1 -> DINO NotPretrained
+	exp2 -> DINO Pretrained
+\subsection{Experiment 3: STEGO}
+	exp1 -> STEGO with NotPretrained DINO
+	exp2 -> STEGO with Pretrained DINO
+\subsection{Experiment 4: STEgeo}
+	exp1 -> pointsym with best DINO
+	exp2 -> axissym with best DINO

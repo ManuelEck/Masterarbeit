@@ -1,0 +1,300 @@
+\chapter{Grundlagen}
+\label{chap:grundlagen}
+% -----------------------------------------------------------------------------
+\iffalse
+\begin{itemize}
+
+    \item Materialdefekte (Wissenschaftliches Ziel (Übergang von Grundlagen zu Methoden))
+        \item EUPVSEC23 als vgl. (fischer) -> Fischer schreien
+        \item Materialdefekte durch Deposition 
+        \item Defekte beschreiben und Ursache
+        
+    \item Datengrundlage 
+        \item allg. Daten (Bilddaten, Ausprägung)
+        \item Bildgebende Photolumineszenz     
+
+    \item Bildsegmentierung, traditionelle Verfahren vs neuronale Netze
+        \item anhand was Muster erkennen -> Kontrast, Linieneigenschaften(krümmung, ecken, diche), Formeigenschaften(Diskreptoren), frequenz, ... 
+        
+    \item Tranditonelle Bildverarbeitung -> thresholding -> canny  
+        \item Faltungen erklären (bsp. Canny aber auch CNNs ( für UNet))
+        
+    \item Neuronale Netze
+        \item Aufbau von Netzwerken - Daten -> training -> loss -> val -> ...
+        \item Überwachtes Lernen
+            \item  genereller Aufbau
+        \item Weakly supervised
+        \item Reinforced Learning
+        \item Un Überwachtes Lernen
+            \item Sturkturen von Netzweken (Master-Student, Encoder-Decoder, ...) -> Vorwärtsreferenz
+            \item Transformatoren
+        \item Metriken 
+            \item Einleitung Konvergenz als notwendiges Kriterium aber nicht hinreichend -> deshalb Kombination der Metriken  
+            \item Allg: Mächtiges Mittel um auf Anwendung anzupassen 
+                \item Allg konzept bsp: Mutual Information
+            \item IoU <->  mIoU
+            \item Genauigkeit und Präzision (mit Beispielbild) 
+            \item Loss als Metrik 
+            \item Metriken für unüberwachtes Lernen (noch herausfinden welche es alles gibt)
+            \item hungarian matching style algorithm
+\end{itemize}
+\fi
+% Oberhalb nur struktu, kann gelöscht werden  -----------------------------------------------------------------------------------------------
+
+Zu Beginn soll hier für die technologischen Grundlagen ein Verständnis vermittelt werden. Zudem werden alle für diese Arbeit wichtige wissenschaftliche Arbeiten vorgestellt. Zunächst wird ein Überblick über die Grundlagen von Netzwerken gegeben. Im Anschluss werden dann verschiedene Metriken erläutert, mit welchen die semantische Segmentierung bewertet wird. Zudem werden die verwendeten Datensätze beschrieben und ihre Herkunft beschrieben.
+
+\section{Struktur der HJT Zelle}
+
+   Eine Silizium Heterojunction-Solarzelle besteht aus einem Stapel von kristallinen und amorphen Silizium Schichten, wobei durch die Nutzung der unterschiedlichen Absorptionsfenster der beiden Silizium-Materialien ein höherer Wirkungsgrad erreicht wird als bei Mono-Junction Solarzellen. Die mittlere Schicht, bestehend aus dem negativ dotierten (n) kristallinen Silicium-Wafer ist dabei zunächst von einer Schicht intrinsischem (i) amorphen Silicium ummantelt, welcher die eigentliche "Junction", also den Übergang, bildet. Durch Abscheidung einer positiv dotierten (p) a-Si Schicht auf der Rückseite erfolgt die Emitterbildung, während auf der Vorderseite eine n-dotierte a-Si-Schicht aufgebracht wird. Somit ergibt sich eine p-i-n-i-n-Schichtung mit pn-Übergang auf der Rückseite. Für eine gleichzeitige Reduktion der Reflexion und der Erhöhung der lateralen Leitfähigkeit werden schließlich die Transparent Conductive Oxide(TCO) und Indium Tin Oxid(ITO) \cite{SHJDeWolfDescoeudresHolmanBallif2012} Schichten aufgebracht. Die Herstellung der Metallkontakte, auch Metallisierung genannt, wird nun als letztes aufgetragen, welche für die Leitfähigkeit aus der Solarzelle sorgt. Eine Beispielhafte Konfiguration ist in Abbildung \ref{fig:cell_arch} zu sehen. \\
+   Während des Herstellungsprozesses werden Defekte in das Material eingebracht, insbesondere durch das Aufbringen der a-Si, ITO- und TCO-Schichten und die damit verbundenen Transportvorgänge. Dafür müssen die Wafer zu den einzelnen Apparaturen, welche das Schichtauftragsverfahren durchführen, transportiert werden. Der Transport wird durch Förderbänder, Greifer und Carrier realisiert. Bei größeren Distanzen werden die Wafer mittels Greifern in ein Carrier gelagert und bei der nächsten Anlage mit weiteren Greifern aus selbigen auf ein Förderband gehoben. \\
+
+   \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth ]{Graphiken/production_img.jpg}
+    \caption{Blick in die Produktion mit Transportvorrichtungen wie Greifern und Förderbändern\cite{tray_img23}}
+    \label{fig:prod_img}
+\end{figure}
+   
+   Durch die Handhabung der Wafer werden Partikel auf die Waferoberfläche aufgebracht, welche in optischen Messsytemen beobachtet werden können und kritisch für die Solarzelle sind. Bei dem Kontakt mit den Fördereinrichtungen kommt es zu einem mechanischen Abrieb, welcher in den Wafer diffundiert. Dies wird durch die Temperatur von bis zu 145°C, welche für den Schichtauftragsprozess benötigt wird, verstärkt. Ein Raster-Elektronen-Mikroskopbild der, auf die Waferoberfläche übertragenen Partikel nach einem Greiferkontakt inst in Abbildung \ref{fig:particles} zu sehen. In Rot sind dabei die Partikel gekennzeichnet, welche sich nach dem Kontakt auf dem Wafer befinden. WICHTIG Die Teile was häufig zu einem Einschluss zwischen den Schichten führt. \\
+   
+   Zusätzlich kann es bei den einzelnen Transportvorgängen zu einer mechanischen Verformung des Wafermaterials kommen. Dies geschieht beispielsweise beim Entladevorgang, da die Vakuum-Greifer mit einem hohen Unterdruck angesteuert werden müssen um die Wafer aus dem Carrier lösen zu können.
+   
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth ]{Graphiken/particles_gripper.png}
+    \caption{ eines Vakuum Greifers mit resultierenden Partikeln. Aufgenommen mit einem Rasterelektronenmikroskop \cite{particle_image_Fischer2019}}
+    \label{fig:particles}
+\end{figure}
+
+   Einschlüsse aus Fremdmaterialien zwischen den aufgetragenen Schichten und mechanische Verformungen wirken sich negativ auf die gesamt Effizienz der Solarzelle aus. Fischer et. al \cite{Fischer.2022} zeigen, dass Materialeinschlüsse zu einer geringeren Effizienz führen. Die Korrelation zwischen der prozentualen Partikelabdeckung und dem relativen Effizienzverlust ist in Abbildung \ref{fig:relativeAreaLossWafer} zu sehen. Dies ist für verschiedene Greifertypen bei verschiedenen Materialtemperaturen dargestellt.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth ]{Graphiken/relativAreaLossWafer.png}
+    \caption{Korrelation des normalisierten Pseudoverlustes $\eta$ durch eine bei der Handhabung induzierten Defekt. Diese wird für verschiedene Temperatur und Material abhängige Teilchendichte angegeben \cite{impactParticlesFischerrefId0}
+    \\ PU = Polyurethan , PEEK = Polyetheretherketon}
+    \label{fig:relativeAreaLossWafer}
+\end{figure}
+  
+
+
+
+    
+\section{Datengrundlage}
+  Um ein Netzwerk trainieren und evaluieren zu können, werden Daten benötigt. Die Auswahl eines repräsentativen Datensatzes ist die Grundlage für den Erfolg des Trainings und der Qualität der in der Auswertung erzielten Ergebnissen. 
+  
+  \subsection*{Daten für Segmentierungsaufgaben}  
+  Für die Segmentierung eines Bildes muss die Qualität, Quantität und Variabilität der Daten in einer Güte vorliegen, dass die Möglichkeit besteht, ein ausreichend gutes Ergebnis zu erzielen. \\
+  Dabei ist ein Faktor für die hinreichende Repräsentativität, dass genügend Daten vorhanden sind. Zusätzlich sollte möglichst auf eine Gleichverteilung der einzelnen Klassen geachtet werden, damit keine Über- oder Unter-Repräsentation von einzelnen Klassen stattfindet. Dies ermöglicht dem trainierenden Netz eine ausreichende Varietät einer Klasse zu erkennen und somit die relevanten Eigenschaften dieser Klasse filtern.\\
+  Damit eine Vorhersage getroffen werden kann, müssen die Daten als Bilddaten vorliegen. Für überwachte Trainingsalgorithmen ist es zudem essentiell, dass diese als Bildpaare vorliegen. Das Datenpaar besteht dabei aus dem eigentlichen Bild und einer Ground Truth (GT). Das meist mit großem Aufwand händisch erzeugte Grundwissen teilt das Bild in entsprechende Klassen auf, so dass jeder Pixel einer Klasse angehört.
+
+  \section{Messverfahren}
+  \subsection*{Bildgebende Photolumineszenz}
+  Die Bildgebende Photolumineszenz(PL) macht intrinsische, aber auch defekt-bedingte elektronische Übergänge in einem zu untersuchenden Material sichtbar. Ein großer Vorteil dieser Technik ist, dass sie nicht invasiv ist und somit keinen direkten physischen Kontakt mit dem zu untersuchenden Wafer benötigt. Dies eliminiert Artefakte, die durch einen Kontakt mit der Probe entstehen könnten.\\
+  Die lokale elektronische Qualität eines Silizium-Wafers wird in der bildgebenden Photolumineszenz durch einen Detektion von ausgesandtem Licht in der Bandlücke charakterisiert.\cite{PL_imaging_Trupke_Bardos_Schubert_Warta_2006} Dazu werden die Elektronen in einem Halbleiter, mittels Lichtabsorbtion in einen elektronisch angeregten Zustand gebracht. Die Entstandenen Elektron-Elektron Loch-Paare rekombinieren nach ihrer Lebensdauer. Die Energie, welche bei der strahlenden Rekombination frei wird, kann somit gemessen werden. \\
+  Der Exemplarische Aufbau einer PL Messung ist in Abbildung \ref{fig:measurement} dargestellt. Der Wafer wird durch ein Laser angeregt. Die freiwerdende Energie wird von deiner ladungsgekoppelten Kamera erfasst. 
+  In den entstandenen Photolumineszenz Bildern wird somit die elektrische Qualität der untersuchten Probe dargestellt. Dieser wird in Grauwerten angegeben. Ein niedriger Grauwert spiegelt dabei eine niedrigere elektrische Leitfähigkeit und umgekehrt ein höherer Grauwert eine größere elektrische Leitfähigkeit dar. \\
+
+  \begin{figure}[h!]
+     \centering
+     \includegraphics[width=0.5\textwidth]{Graphiken/pl_measuring.png}
+     \caption{Exemplarische Darstellung einer PL Messung}
+     \label{fig:measurement}
+  \end{figure}
+
+
+ 
+  \iffalse
+  \begin{figure}[h!]
+    \begin{subfigure}[b]{0.6\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Graphiken/MeasurementScheme.png}
+         \caption{}
+         \label{fig:measurement1}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.5\textwidth}
+         \centering
+         \includegraphics[width=0.6\textwidth]{Graphiken/pl_imaging_device.png}
+         \caption{}
+         \label{fig:measurement2}
+     \end{subfigure}
+    \caption{Aufbau Photolumineszenz Messverfahren \textbf{(a)}, Messgerät \textbf{(b)}}
+    \label{fig:measurementScheme}
+  \end{figure}
+  \fi 
+  
+  
+ 
+
+\section{Bildsegmentierung}
+% \subsection*{Bildmerkmale}
+
+\subsection{Traditionelle Bildverarbeitung}
+%\todo{im klassischen wirkliche Segmentierung -> in Neuronalen Netzen eher eine allgemeine Mustererkennung was als Segmentierungen interpretiert wird}
+
+In der Bildverarbeitung sind automatisierte visuelle Erkennungsaufgaben für Anwendungsgebiete wie Bildklassifikation, Objekterkennung und Bildsegmentierung ein wichtiger Bestandteil. Traditionelle Verfahren zur Merkmalserkennung verwendenden Heuristiken, welche speziell angepasste Parameter benötigen, um Eigenschaften aus Bildern für eine entsprechende Schlussfolgerung zu extrahieren. Oftmals sind diese Verfahren sehr effektiv, allerdings sind sie häufig nicht robust auf eine Veränderung der Daten und Parameter eingestellt. Dies macht es manchmal schwer für ein entsprechendes Aufgabengebiet einzustellen. Dies ist auch der Grund, warum diese Art von Merkmalserkennung schwer verallgemeinerbar und übertragbar ist. 
+
+
+\paragraph{Thresholding.}
+ Thresholding ist ein Verfahren, welches sehr effektiv und simpel für eine Aufteilung eines Bildes in verschiedene Klassen sein kann. Hierbei wird mittels eines Schwellwertes bestimmt, zu welcher Klasse die betrachtete Stelle in einem Bild gehört. Das Thresholding hat viele verschiedene Varianten wie das Durchschnittsverfahren, ein Adaptives Verfahren oder das von Otsu\cite{otsu4310076} entwickelte. Diese Verfahren haben allerdings immer das Problem, dass diese an Helligkeitswerte gekoppelt sind und auch schwer auf andere Datenquellen übertragbar sind. Thresholding wird allerdings oftmals als letzter Schritt in einer Kette von Prozess-Schritten ausgeführt, was diese Nachteile ausgleichen kann. \\
+ Ein Thresholding kann so beispielsweise innerhalb der Prozesskette von Transformern (vgl. Kapitel \ref{sec:ViT}) zur Entwicklung von verschiedenen Klassen aus einzelnen Attention-Heads helfen. 
+ 
+\paragraph{Canny Kantendetektor.}
+Eine weit verbreitete Techniken der Bildsegmentiertung ist die Canny-Kantenerkennung \cite{Canny1986}. Dieser Algorithmus basiert auf einer Faltung mit dem Sobel-Filter, Non-maxima-suppression und einem Schwellwertverfahren.
+
+
+\subsection{Maschinelles Lernen}
+
+Neben den klassischen Verfahren zur Bildsegmentierung werden zur Segmentierung von Bilddaten auch maschinelles Lernen eingesetzt. Da in dieser Arbeit maschinelles Lernen in Form von überwachtem und unüberwachten Lernmethoden zur Detektion von Defekten eingesetzt wird, wird hier ein kurzer Überblick über die einzelnen Verfahren gegeben. 
+
+
+\section{Neuronalen Netzes}
+Neuronale Netze ermöglichen es, die Komplexität von Daten in einen kleinen Datenraum zu überführen und in diesem eine komprimierte Darstellung der wichtigen Eigenschaften zu erhalten. Diese Repräsentations-Methoden ermöglichen es somit dem Modell, verschiedene Repräsentationsebenen für eine Eingabe zu lernen \cite{deepLearningLeCun2015}. Der Unterschied zu traditionellen Methoden ist, dass die Eigenschaften der Daten somit nicht individuell betrachtet wurden, sonder mit einer allgemein anwendbarer Methode gelernt wurde. \\
+Neuronale Netze haben durch die erzielten Ergebnisse bewiesen, dass diese für viele Bereiche geeigneter sind. Die Bildverarbeitung ist ein Bereich, in welchem sich enorme Fortschritte durch die Einführung von tiefen neuronalen Netzen ergeben haben. Dies erstreckt sich über beispielsweise die Entwicklung von Convolutional Neural Networks (CNNs) \cite{CNNsCunHBB99}, die Erstellung von Datensätzen wie SA-1B \cite{SAMKirillov2023} mit 11 Millionen hochaufgelösten Bildern und 1,1 Milliarden qualitativ hohen Annotationen auf Pixelebene, oder neuen Lernstrategien, welche Labels überflüssig machen (vgl. \ref{sec:unsupervised}). Dies spricht sehr stark dafür, dass tiefe Neuronale Netze für viele Bildverarbeitungsprobleme essenziell sind. \\
+Da diese Arbeit besonders den Unterschied zwischen überwachten und unüberwachten Lernmodellen analysiert, wird im Folgenden besonders auf verschiedene Lernstrategien im Bezug auf Bildsegmentierung eingegangen.  
+
+    
+\subsection{Überwachtes Lernen}
+\label{sec:supervised}
+Überwachtes Lernen repräsentiert einen fundamentalen Ansatz des maschinellen Lernens und für das Lösen von Bildverarbeitungsproblemen. Bei diesem Lernansatz wird ein Modell auf Basis von annotierten Trainingsdaten entwickelt. Ein gelabelte Datenpaar besteht aus Grunddaten, welche das zu lösende Problem darstellt und zugeordneten Lösungen des Problems. Für ein Segmentationproblem wäre dies beispielsweise ein Bild und ein Label, welches jedes Pixel des Bildes einer Zielklasse zuordnet.\\
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Graphiken/learning_strats/supervised.png}
+    \caption{Darstellung einer überwachten Lernstrategie. Daten-Label Paar trainiert Neuronales Netz. Testdaten können mit einem erfolgreich trainierten Netz in korrekt gelernte Klassen überführt werden.}
+    \label{fig:supervised}
+\end{figure}
+
+Das primäre Ziel des überwachten Lernens besteht darin, ein Modell zu entwickeln, welches die komplexen Zusammenhänge und Muster zwischen den Eingaben und den zugehörigen Ausgaben erkennt. Dieser Prozess umfasst in der Regel die Minimierung einer Fehlerfunktion, die die Abweichung zwischen den vom Modell vorhergesagten Ausgaben und den tatsächlichen Ausgaben quantifiziert. Die Minimierung der Fehlerfunktion wird durch Anpassung von Modellparameter erreicht.  
+Wenn sehr klare Informationen für die Ausgabedaten vorhanden sind ist diese Art von Lerntyp sehr gut anwendbar. Dies bedeutet somit, dass für Aufgabengebiete, in denen Annotationen für Bilder nur schwer erlangbar sind, das überwachte Lernen keine geeignete Architektur darstellt.\\
+Populäre Modelle innerhalb dieser Strategie sind CNNs \cite{CNNsCunHBB99}, wie beispielsweise das Unet \cite{UNETRonneberger2015}, Generative Adversarial Networks (GAN) \cite{GAN_GoodfelowNIPS2014_5ca3e9b1} wie pix2pix \cite{GANisola2018imagetoimage} oder Tansformer\cite{Transformer_Vaswani2017} wie Segment Anything \cite{SAMKirillov2023}.
+
+
+\subsection{Unüberwachtes Lernen}
+\label{sec:unsupervised}
+Unüberwachtes Lernen konzentriert sich, im Gegensatz zum überwachten Lernen, auf das Erkennen von Strukturen und Muster in Daten, ohne dass annotierte Daten vorhanden sind. Es gibt zwei zentrale Herausforderungen. Diese umfassen die Dimensionsreduktion der Daten um eine bessere Repräsentation der Merkmale entwickeln und erfassen zu können und das Problem des Clusterings, in welchem ähnliche Datenpunkte in Gruppen oder Cluster zusammengefasst werden. \\
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Graphiken/learning_strats/unsupervised.png}
+    \caption{Beispielhafte Darstellung eines überwachten Lernverfahren. Neuronales Netz trainiert lediglich mit Daten ohne . Testdaten können mit einem erfolgreich trainierten Netz in korrekt gelernte Klassen überführt werden.}
+    \label{fig:unsupervised}
+\end{figure}
+
+Der Vorteil dieser Architektur liegt darin, dass keine annotierten Daten für den Trainingsprozess benötigt werden. Dies ermöglicht es auch für hochspezialisierte Gebiete, in welchen nur wenige oder keine Annotationen vorhanden sind, maschinelles Lernen einzusetzen, ohne einen immensen Aufwand durch das Annotieren von Daten zu generieren.
+Unüberwachte Lernstrategien werden in verschiedensten Modellen zur Bildsegmentierung eingesetzt. Relevante Repräsentaten sind IIC \cite{iicji2019}, DINO \cite{caron2021emerging} oder STEGO \cite{STEGOhamilton2022unsupervised}.   
+
+\subsection{Vision Transformer}
+\label{sec:ViT}
+
+Die Transformer Architektur \cite{Transformer_Vaswani2017} ist der Standard bei Problemstellungen in der Verarbeitung von natürlicher Sprache. Diese Architektur benötigt zum Vortrainieren eine große Menge an Daten. Der Vorteil diese Modells liegt darin, dass für das Anpassen an ein spezifisches Problem nur eine kleine Datenmenge benötigt wird. Die Berechnungseffizienz und Skalierbarkeit von Transformern ist ausgezeichnet, was es ermöglicht, selbst Modell mit weit mehr als 100 Milliarden Parametern zu trainieren. Da die Architektur der Transformer noch nicht so umfangreich, wie beispielsweise Convolutional Neural Networks, erprobt wurden, muss noch gezeigt werden, dass dieser Ansatz in Robustheit und Qualität für reale Anwendungen eingesetzt werden. Allerdings zeigt sich vermehrt, dass Transformer Architekturen Stand der Technik Resultate erzeugen können\cite{stateOfTheArt_Mo_2022}. \\
+Dosovitskiy et. al. \cite{ViTdosovitskiy2021image} haben den Transformer-Ansatz auf Bilddaten angewendet. Die Architektur wurde mit minimalen Änderungen von der Verarbeitung natürlicher Sprache auf die Verarbeitung von Bildern übertragen. Dieser Ansatz wird schematisch in Abbildung \ref{fig:ViT} dargestellt. \\
+Die Grundidee dieser Arbeit besteht darin, ein Bild in Ausschnitte zu zerlegen und diese als Abfolge von Objekten zu interpretieren. Hierzu werden aus den einzelnen Ausschnitten mithilfe von Linearprojektionen Einbettungen erstellt. Vor die Sequenz der Bildausschnitte wird zusätzlich eine lernfähige Einbettung gesetzt, die sicherstellt, dass nur die letzte Einbettung in die Klassifikationsschicht einfließt. Die Einbettung kann als aggregierte Darstellung der Bildausschnitte interpretiert werden. Alle Ausschnitte werden mit einer Positionseinbettung versehen, damit die Positionsinformation erhalten bleiben. Anschließend wird diese Sequenz in den Kodierer des Transformers überführt, welcher aus mehreren gleich aufgebauten Schichten besteht. In jeder Schicht durchlaufen die Einbettungen einen Multihead Self-Attention Block und werden durch einen mehrlagigen Perzeptron-Block interpretiert. Vor jedem Block wird die Eingabe normalisiert und nach jedem Block wird eine Residualverbindung erzeugt.
+
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{Graphiken/overview_vision_transformer.png}
+	\caption{Expemplarische Darstellung eines Vision Transformers \cite{ViTdosovitskiy2021image}}
+	\label{fig:ViT}
+\end{figure}
+
+Um die Fokussierung auf unterschiedliche Räume zu ermöglichen, die wiederum unterschiedliche semantische oder syntaktische Bedeutungen haben können, wird der Multi-Head Attention Block verwendet. Der Attention Block vergleicht alle Eingabeelemente miteinander und verändert das entsprechende Ausgabeelement. Dies bedeutet, dass die Eingabesequenz speziell für jeden Eintrag nach dem entsprechenen key-value durchsucht und dann der Ausgabesequenz zugeordnet wird. \\
+Die verschiedenen Versionen des Vision Transformers, welches sich beispielsweise durch eine andere Ausschnittsgröße und somit auch Parameterraum unterscheidet, erzielt bessere Ergebnisse als die Modelle, welche davor Stand der Technik waren\cite{ViTdosovitskiy2021image}. Es wird gezeigt, dass auf populären Bild Datensätzen mit dieser Technik eine sehr hohe Genauigkeit erzielt wird. Beispielsweise wird auf dem Cityscapes \cite{CityscapesCordts2016} Datensatz eine durchschnittlich Intersection over Union von 84,5 \% als multi-scale Inferenz bei der Verwendung der Mask2Former \cite{Mask2Former_Cheng_2022_CVPR} Strategie.  \\
+
+
+
+
+\section{Verlustfunktionen}
+\label{sec:verlustfunktionen}
+Für das Training eines Modells ist eine Verlustfunktion notwendig. Im Bildsegmentierungs Kontext gibt dieser den Unterschied zwischen den vorausgesagen Daten und den tatsächlichen Zieldaten an.
+Repräsentanten von Lossfuntionen sind Mean Absolut Error(MAE), Mean Squared Error(MSE) und Binary  Entropy (BCE).\\
+
+\subsection{Tensorkorrelation}
+
+\subsection{Binary Cross Entropy}
+Dieser errechnet den Unterschied der Wahrscheilichkeiten zwischen vorhergesagtem und realen Bild für alle vorhanden Klassen. Dies Art von Verlustfuntion kann sehr gut in Überwachten Lernverfahren eingesetzt werden, da direkt eine Übereinstimmung zwischen den errechneten Ergebnissen und den tatsächlichen Ergebnissen berechnet werden kann. Trotzdem kann diese Funktion auch in unüberwachten Szenarien eingesetzt werden. So wird beispielsweise in DINO \cite{caron2021emerging} die Distanz zwischen den Parametern der beiden Netzwerke errechnet. Eine genauere Beschreibung von DINO findet sich in Kapitel \ref{sec:dino}.\\
+Die BCE Verlustfunktion berechnet sich wie in Funktion \ref{eq:BCE} dargestellt, mit den durchschnittlichen Zielklassen $y_{i}$ und den vorhergesagen Daten $\hat{y}_{i}$ und einer Anzahl an Daten $n$. 
+\begin{equation}
+L_{BCE} = -\sum_{i=1}^{n}{y_i \cdot log(\hat y_i) + (1- y_i)\cdot  log (1-\hat y_i)} 
+\label{eq:BCE}    
+\end{equation}
+
+Die Verlustfunktion selbst kann auch als Metrik verwendet werden. Über die Größe der Änderung des Verlustes kann gedeutet werden, ob das verwendete Modell konvergiert oder nicht. Dies ist in jedem Fall allerdings nur ein hinreichendes Evaluationsmaß und kein ausreichendes. Somit macht es Sinn, den Verlust in die Bewertung des verwendeten Modells einfließen zu lassen, aber nicht als einziges Merkmal zu benutzen. \\
+Wenn eine Verlustfunktion konvergiert ist dies ein Indikator, dass das Training des Modells hinsichtlich der verwendeten Parameter ein Minimiert wurde. Diese Minimum muss allerdings interpretiert werden, da eine Minimum auch immer eine Triviale Lösung darstellen kann. 
+
+\section{Metriken}
+\label{sec:metrics}
+
+Damit ein Ergebnis evaluiert werden kann, muss ein Maß entwickelt werden, welches verschiedene Punkte in gegebenen Daten miteinander vergleichen kann. Metriken lassen sich in analytische und empirische Bewertungsmethoden unterteilen. \cite{metricsPOLAK2009} 
+Während die analytischen Methoden die Effizienz, Komplexität und die Strategie im Vorgehen bewerten, werten die empirischen Methoden das Ergebnis selbst aus. 
+Die Empirische Auswertung lässt sich weiter in empirische Güte und Diskrepanz unterteilen. In der Segmentierung von Bilddaten bedeutet dies, dass ein Bild mit der Segmentierten Version dessen verglichen wird. Die Güte misst dabei Faktoren wie die Einheitlichkeit von segmentierten Flächen, den Kontrast zwischen den einzelnen Regionen oder die Form des Segments. Die Diskrepanz hingegen bewertet den konkreten Unterschied zwischen einer Segmentierung und ihrem oftmals händisch annotierten Referenzbild. Eigenschaften dafür sind Menge und Position an falsch segmentierten Pixeln, die Anzahl von Objekten in einem Bild und geometrische Merkmale wie die Fläche, der Umfang oder die Form des segmentierten Objekts. 
+
+\subsubsection*{Jaccard-Koeffizient}
+Der Jaccard-Koeffizient, welcher auch Intersection-over-Union (IoU) genannt wird, ist eine wichtige Metrik im Auswertungsprozess. Dieser ist als Schnittmenge zwischen segmentiertem Bereich \textit{X} und der Ground Truth \textit{Y} definiet. Berechnet wird dieser durch:
+\begin{equation}
+IoU = \frac{(X\cap Y)}{(X \cup  Y)}    
+\end{equation}
+
+Der berechnete Wert liegt somit zischen Null und Eins. Eine Erweiterung des Jaccard-Koeffizienten ist die durchschnittliche Intersection-over-Union (mIoU) welches beim Betrachten von mehreren Segmenten einer Klasse, der durchschnittliche IoU Wert dieser ist. 
+Dieser Wert gibt eine gute Übersicht, ob sich ein verwendetes Modell eine gute Vorhersage erzeugt hat oder nicht. Die IoU beziehungsweise mIoU ist der Standard, welcher als Vergleichsmaß zwischen Modellen genutzt wird. 
+\textcolor{red}{nur IoU da IoU und Genauigkeit die gleiche Berechnung mit verschiedener Skalierung ist}
+
+\subsubsection*{Genauigkeit, Präzision, Sensitivität und F1-Maß}
+Ein weiteres oft genutztes Maß in der empirischen Diskrepanzauswertung von Segmentiertungsergebnissen ist die Genauigkeit (Accuracy). Diese beschreibt die Anzahl an richtig Segmentierten Testpunkten aus der Menge der Gesamtstellen. Dies lässt sich über:
+\begin{equation}
+Genauigkeit = \frac{TP}{TP+FP}    
+\end{equation}
+
+\textit{TP(Echt Positiv}  stellt die tatsächlich richtig klassierten Stellen dar, während \textit{FP(Falsch Positiv)} die falsch segmentierten Elemente der entsprechenden Klasse symbolisiert. 
+Die Präzision(Precision) ist hingegen durch
+\begin{equation}
+Präzision = \frac{TP}{TP+FN}    
+\end{equation}
+ 
+definiert. Hier stellt \textit{FN(Falsch Negativ} die Menge an Punkten dar, welche zu einer entsprechenden Klasse gehören, allerdings nicht segmentiert wurden. 
+Ein in der Literatur stark genutzte Metrik ist die Sensitivität(Recall). Dieses Maß stellt die tatsächlich korrekt klassierte Menge an Datenpunkten dar. 
+Sie lässt sich durch
+\begin{equation}
+Sensitivität = \frac{TP}{TP+FN}    
+\end{equation}
+
+darstellen
+
+Als viertes in dieser Reihe der Metriken ist das F1-Maß zu nennen. Dieses kombiniert die Genauigkeit mit der Präzision und lässt sich als 
+\begin{equation}
+ F1 = \frac{2* Präzision * Genauigkeit}{Präzision + Genauigkeit}    
+\end{equation}
+
+darstellen. Mittels dieser Gleichung lassen sich sehr einfach die Faktoren für Präzision und Genauigkeit zusammenfassen.
+
+
+
+
+
+
+\subsubsection*{Metriken für Unüberwachtes Lernen}
+Da in den vergangenen Jahren versucht wird, vermehrt Unüberwachtem Lernenverfahren zum Einsatz kommen, müssen Metriken gefunden werden, welche für diese Modelle geeignet sind. Da das Unüberwachten Lernen (vgl. Kapitel \ref{sec:unsupervised}) keine Annotationen zur Verfügung hat, macht das die beschriebenen Metriken wie der Jaccard-Koeffizient oder das F-Maß nicht direkt anwendbar. Es ist schwer, ein Maß zu definieren, welches ein Segmentation bewerten soll, ohne dass ein Wahrheitsbild von der entsprechenden Klasse besteht.\\
+Die Faktoren ob eine Segmentation gut geclustert wurde, können durch Skalierungsinvarianz, Fülle und Konsistenz eines Clusters \cite{evaluationMetricsUnsupervisedLearningAlgorithmsPalacioniño2019} bewertet werden. Dieses Axiom wurde von Kleinberg \cite{clusterAxiomKeinberg2002} erstellt. Es besagt, dass diese Eigenschaften ein gutes Segmentationsergebnis ausmachen, es allerdings unmöglich ist, alle drei Eigenschaften gleichzeitig zu erfüllen.  \\
+Skalierungsinvarianz bedeutet in diesem Fall, dass ein Algorithmus, welcher entsprechende Segmentierungen clustert, das Ergebnis nicht verändert, wenn alle Abstände zwischen diesen mit einem konstanten Faktor skaliert werden. Die Fülle einer Segmentation ist gegeben, wenn der Algorithmus eine beliebige Zusammenstellung der segmentierten Ergebnisse eines Datensatzes erzeugen kann. Ein Clustering Verfahren für Segmenationen ist konsistent, wenn die berechneten Ergebnisse sich nicht ändern, obwohl sich die Abstände der Punkte innerhalb einer Segmentationsklasse verkeinen oder die Abstände zwischen einzelnen Clustern größer wird.
+
+Eine oftmals genutzte Möglichkeit, diese Eigenschaften zu beschreiben, ist die Berechnung der Kohäsion einer geclusterten Klasse und die Trennung von einzelnen Segmentationen. 
+\[ \text{Kohaesion} (C_{i})  = \sum_{x\in C_{i}, y\in C_{i}} Nachbarschaft(x,y)   \]
+\textit{C} stellt das entsprechende Cluster und \textit{x} beziehungsweise \textit{y} jeweils ein Beispiel in dem Cluster dar.
+
+Damit lässt sich auch die Trennung zwischen einzelnen Clustern darstellen. 
+\[ \text{Trennung} (C_{i}, C_{j}])  = \sum_{x\in C_{i}, y\in C_{j}} Nachbarschaft(x,y) \]
+
+Sowohl die Kohäsion als auch die Trennung basieren auf einer Approximation der Ähnlichkeit von zwei Daten Paaren. Diese bedeutet somit, dass ein gutes Clustering eine hohe Trennung zwischen Clustern und eine hohe Kohäsion innerhalb der Klasse hat. \\
+Da diese Metriken komplex sind und nicht jedes mal separat berechnet werden müssen, wurden verschiedene Metriken entwickelt, welche Kohäsion und Trennung zusammenfassen. 
+
+\subsubsection{Ungarische Zuordnungsmethode}
+
+Da bei Unüberwachten Lernmodellen aus den Vorausgesagten Bilddaten nicht ersichtlich ist, welche Klasse zu welcher Zielklasse gehört gibt es Verfahren, welche dies Approximieren. Ein Verfahren was in vorausgehenden Arbeiten und der Literatur verwendet wird, ist die Ungarische Zuordnungsmethode.\cite{hungarian_Kuhn_1955}
+Diese Methode misst, wie konsistent sich die vorausgesagten semantischen Segmente in den tatsächlichen Annotationen Widerspiegeln und wie invariant diese gegen Permutation der Klassen ist.\\
+Die Zuordnung jedes Pixels der Vorhersage zu einer Zielklasse kann als $m x m$ Matrix $X$, mit $m x m$ Kostenmatrix $C$ dargestellt werden kann. Das Ziel der Ungarischen Zuordnungsmethode ist nun eine optimale Zuordnung zu finden, welche die Gesamtkosten minimiert.
+Die Minimierung kann durch die Formel \ref{eq:minimize}, mit Pixeln $i$ in der Vorhersage und Zielklassen $j$ dargestellt werden. 
+\begin{equation}
+   min(C) = \sum_{i=1}^{m}\sum_{j=1}^{m}{C_{i,j}X_{i,j}}
+   \label{eq:minimize}
+\end{equation}
+ Die Minimierung der Kosten wird mit der ungarischen Methode wie von Kuhn et al. \cite{hungarian_Kuhn_1955} beschrieben durchgeführt. Diese umfasst eine Zeilen und Spaltenweise Reduktion um dem kleinste Zeilen beziehungsweise Spalten Element der Kostenmatrix. Bei einer noch nicht optimalen Zuordnung wird das Kleinste Element der Kostenmatrix gefunden. Dieser Wert wird nun von den Zeilen welche keine 0 enthalten abgezogen und den Zeilen welche eine 0 enthalten hinzugefügt. Diese Schritte werden so lange durchgeführt bis eine optimale Zuordnung der Nullen möglich ist. Das Optimum ist gefunden wenn $ min(C) = 0$ ist. 

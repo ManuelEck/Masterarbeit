@@ -1,0 +1,66 @@
+\acswitchoff 
+\babel@toc {ngerman}{}\relax 
+\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{II}{chapter*.3}%
+\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{V}{chapter*.5}%
+\contentsline {chapter}{\numberline {1}Einleitung}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Beitrag dieser Arbeit}{4}{section.1.2}%
+\contentsline {chapter}{\numberline {2}Grundlagen}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Struktur der HJT Zelle}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Datengrundlage}{9}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Messverfahren}{11}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Bildsegmentierung}{11}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Traditionelle Bildverarbeitung}{11}{subsection.2.4.1}%
+\contentsline {paragraph}{\nonumberline Thresholding.}{12}{paragraph*.20}%
+\contentsline {paragraph}{\nonumberline Canny Kantendetektor.}{13}{paragraph*.22}%
+\contentsline {subsection}{\numberline {2.4.2}Maschinelles Lernen}{13}{subsection.2.4.2}%
+\contentsline {section}{\numberline {2.5}Neuronalen Netzes}{13}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Überwachtes Lernen}{14}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Unüberwachtes Lernen}{15}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Vision Transformer}{16}{subsection.2.5.3}%
+\contentsline {section}{\numberline {2.6}Verlustfunktionen}{18}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Tensorkorrelation}{18}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Binary Cross Entropy}{18}{subsection.2.6.2}%
+\contentsline {section}{\numberline {2.7}Metriken}{19}{section.2.7}%
+\contentsline {subsubsection}{\nonumberline Ungarische Zuordnungsmethode}{23}{subsubsection*.30}%
+\contentsline {chapter}{\numberline {3}Übersicht der Defekte und Daten}{25}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Datenausprägung}{25}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Defektbeschreibung}{27}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Herausforderung der Daten}{29}{subsection.3.1.2}%
+\contentsline {chapter}{\numberline {4}Ansatz}{31}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Übersicht}{31}{section.4.1}%
+\contentsline {paragraph}{\nonumberline Überwachtes Lernen mit U-Net:}{31}{paragraph*.35}%
+\contentsline {paragraph}{\nonumberline Unüberwachtes Lernen mit DINO und STEGO:}{31}{paragraph*.37}%
+\contentsline {paragraph}{\nonumberline Unüberwachtes Lernen mit STEgeo (geometrische Verlustfunktion)}{31}{paragraph*.39}%
+\contentsline {section}{\numberline {4.2}U-Net}{32}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}U-Net pretrained}{33}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}DINO: Self-DIstillation with NO labels}{34}{section.4.3}%
+\contentsline {section}{\numberline {4.4}STEGO: Self-supervised Transformer with Energy-based Graph Optimization}{36}{section.4.4}%
+\contentsline {section}{\numberline {4.5}STEgeo: Self-supervised Transformer with GEOmetric feature loss}{36}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Experimentalteil}{42}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Gestaltung der Experimente}{42}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Datensatz}{42}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Datensatz Überblick}{42}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Daten Vorverarbeitung}{45}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Segmentationsmodelle}{46}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Überblick Netzwerktraining}{46}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Experiment 1: U-Net}{47}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Experiment 2: DINO}{47}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Experiment 3: STEGO}{47}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Experiment 4: STEgeo}{47}{subsection.5.3.5}%
+\contentsline {chapter}{\numberline {6}Ergebnisse}{48}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Überwachtes Lernen}{48}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}U-Net}{48}{subsection.6.1.1}%
+\contentsline {subsubsection}{\nonumberline U-Net mit vortrainiertem Encoder}{52}{subsubsection*.61}%
+\contentsline {section}{\numberline {6.2}Unüberwachtes Lernen}{52}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}DINO}{52}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}STEGO}{53}{subsection.6.2.2}%
+\contentsline {subsubsection}{\nonumberline STEGO mit DINO als Backbone}{53}{subsubsection*.65}%
+\contentsline {section}{\numberline {6.3}Vergleich der Modelle}{54}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Vergleich Experimente unüberwachtes Lernen}{54}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}DINO}{54}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}DINO + STEGO}{56}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Vergleich Modelle}{57}{subsection.6.3.4}%
+\contentsline {chapter}{\numberline {7}Diskusion}{59}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Zusammenfassung und Ausblick}{61}{chapter.8}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

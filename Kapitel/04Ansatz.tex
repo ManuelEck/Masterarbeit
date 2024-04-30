@@ -1,0 +1,202 @@
+\chapter{Ansatz}
+\label{chap:ansatz}
+
+\section{Übersicht}
+\label{ansatz:übersicht}
+	In dieser Arbeit werden Modelle zur Detektion von Defekten auf HJT Wafern anhand von photolumineszenz Messungen ausgewählt, entwickelt und ausgewertet. Diese Verfahren umfassen Überwachte Modelle und unüberwacte Modelle. 
+	\paragraph{Überwachtes Lernen mit U-Net:} 
+	Als überwachtes Lernmodell wurde ein U-Net Modell ausgewählt. Die Konfiguration des Netzwerkes wird in \ref{HIER UNET config}. Die für das Training und die Evaluation verwendeten Daten werden in Kapitel \ref{Kapitel Datensätze} beschrieben. Die benötigten Annotation für dieses Modell sind in Kapitel \ref{Kapitel Annotationen (Experimentalteil)} erläutert. 
+	\paragraph{Unüberwachtes Lernen mit DINO und STEGO:}
+	Um Defektstrukturen ohne entsprechende Annotationen segmentieren zu können wird das unüberwachte Lernmodell DINO \cite{caron2021emerging} verwendet. Das Modell wird in Kapitel \ref{Kapitel DINO} und die verwendete Konfiguration der Parameter in Kapitel \ref{Kapitel DINO EXPERIMENTAL} beschrieben. \\	
+	Eine Erweiterung zu DINO stellt das Modell STEGO \cite{STEGOhamilton2022unsupervised} dar. Dieses wird in Kapitel \ref{modell stego} und die exakte Modellkonfiguration in Kapitel \ref{STEGO experimentalteil} beschrieben.
+	\paragraph{Unüberwachtes Lernen mit STEgeo (geometrische Verlustfunktion)}
+	Viele der in den Photolumineszenz Messungen sichtbaren Defekte folgen einer geometrischen Anordnung. Daraus wurde eine neuartige Verlustfunktion kreiert, welche in das STEGO Modell integriert wurde. Diese Verlustfunktion wird im Detail in Kapitel \ref{STEgeo} beschrieben. 
+	
+\section{U-Net}
+\label{ansatz:unet}
+	Das populäre und oft genutzte U-Net \cite{UNETRonneberger2015} wird hier als Modell für eine Segmentierung mittels überwachter Lernmethode genutzt.Dieses I
+	Das hier verwendete U-Net ist eine leichte Abwandlung des Originalmodells. Das Modell hat eine Tiefe von 5 Blöcken. Die Blöcke\ref{fig:u_net_block} bestehen aus einer convolution, Batch Normalisation und einer Aktivierung mittels Rectified Linear Unit(ReLU). Innerhalb des Encoders wird die Dimensionsreduktion über einem Max-Pooling mit einer Kernelgröße von (2x2) erzielt. Die Dimensions-Erweiterung innerhalb des Decoders wird über ein upsampling erziehlt.
+
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\textwidth ]{Graphiken/models/uNetBlock}
+			\caption{Einzelner Convolution Block in dem modifizierten U-Net. Dieser besteht aus einem conv Schicht, BN und ReLU als Aktivierung.}
+			\label{fig:u_net_block}
+	 	\end{figure}
+ 	
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=\textwidth]{Graphiken/models/unet_arch.png}
+			\caption{Schematischer Aufbau eines U-net Modells mit einer Auflösung von 32x32 Pixeln am tiefsten Punkt}
+			\label{fig:unet_arch}
+		\end{figure}
+		
+		In Abbildung \ref{fig:unet_arch} werden als Eingabedaten Photolumineszenz Messungen mit einer Größe von 256 x 256 px\textsuperscript{2} und 8 Eingabekanälen genutzt. Über die 4 max-pooling Reduktionsschichten wird eine Komprimierung auf 16 x 16 Pixel im Bottleneck des Modells erzielt. Im Decoder des U-Nets wird dann die ursprüngliche Dimension von 256x256 Pixel wieder über ein upsampling hergestellt.
+		
+		
+		
+	\newpage
+		
+	\subsection{U-Net pretrained}
+		Als Erweiterung des U-Nets wird eine abgewandelte Version des U-Nets verwendet, in welchem ein Teil des Netzwerkes mit einem Vortrainerten Netzwerk ausgetauscht wird. Der Encoder Teil des U-Nets wird dabei durch ein ResNet \cite{resNet2015} ausgetauscht. Die skip-Verbindungen des U-Nets werden dabei Aufrecht erhalten. Die einzelnen ResNet-Blöcke bestehen aus 3x3x3 Faltungen. \\
+		Während des Trainingsprozesses wird lediglich der Decoder Teil des Netzwerkes trainiert. Dies ermöglicht es die Vortrainierten Eigenschaften des ResNet Modells innerhalb des Encoders zu nutzen. \\
+		Das hier verwendete ResNet wurde auf dem Datensatz ImageNet \cite{imagenetdeng2009} trainiert und hat eine top1-Genauigkeit von 80,53\% erzielt. \\
+		Die Bildgröße innerhalb der Vorverarbeitung wurde auf 244x244 verkleinert, da das Training des ResNet Modells mit dieser Bildgröße durchgeführt wurde. 
+		
+		
+	
+	\section{DINO: Self-DIstillation with NO labels}
+	\label{ansatz:dino}
+		
+		
+		Aufbauend auf den bemerkenswerten Ergebnissen der in Kapitel \ref{sec:ViT} beschriebenen Vision Transformern wir eine unüberwachter Lernansatz genutzt um das Model zu trainieren. Caron et. al. zeigen in dem Paper Emerging Properties in Self-Supervised Vision Transformers \cite{caron2021emerging}, dass es möglich ist, mit einem selst-überwachtem Ansatz ein außergewöhnliches Ergebnis mit 78,3 \% als top-1 k-NN und 80,1\% als linearen Klassifizierer auf dem ImageNet\cite{imagenetdeng2009} Datensatz zu erreichen. \\
+		
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=\textwidth]{Graphiken/models/dino_structure.png}
+			\caption{DINO Architektur mit exemplarischen Daten}
+			\label{fig:dino_arch}
+		\end{figure}
+		
+		Ihr Modell DINO interpretiert den selbst-überwachte Ansatz dabei als eine Wissens-Distillation. 
+		Wissens Distillation ist ein Prozess in welchem die Parameter in eimem Netzwerk $ g_{\theta s}$ so angepasst werden, dass es der Ausgabe eines zweiten Netzwerkes $g_{\theta t}$ entspricht. Die Ausgabe ist eine Wahrscheinlichkeitsmatrix über \textit{K} Dimensionen, welche durch eine Softmax Normalisierung berechnet wird. \\
+		Die Wahrscheinlichkeitsverteilung P\textsubscript s lässt sich durch, 
+		\[ p_{s}(x)^{(i)} = \frac{exp(g_{\theta}(x)^{i}/\tau_{s})))}{\sum_{k=1}^{K})exp(g_{\theta}(x)^{k}/\tau_{s}))}	\]
+		darstellen, wobei $\tau \textsubscript s $ ein Temperatur Parameter darstellt, welcher die Intensität Ausgabeverteilung bestimmt. Das Netzwerk  $g_{\theta t}$ verhält sich equivalent dazu. Die Netzwerke  $g_{\theta s}$ und  $g_{\theta t}$ selbst, bestehen aus je einem Vision Transformer als Backbone wie in Kapitel \ref{sec:ViT} dargestellt und einem Projektionskopf. Der Projektskopf besteht dabei aus einem drei-lagigen multi-layer Perzeptron mit einer versteckten Dimension von 2048. Auf diese folgt eine $l_{2}$ Normalisation und ein gewichtnormalisierter Fully Connected Layer. \\
+		Die Verteilungen des Netzwerkes $g_{\theta t}$ werden von $g_{\theta s}$ über ein cross-entropy loss angenähert, in dem die Parameter des Netzwerkes $g_{\theta s}$ durch einen stochastischen Gradientenabstieg angepasst werden. Dies stellt sich durch  $ H(p_1, p_2) = - p_2 log p_1$ dar.
+		Damit dies selbstüberwacht geschieht, werden verschiedene verändere Sichten \textit{V} von einem Bild generiert, welche zwei globale Sichten und mehrere kleinerer lokale Ansichten. Während das Netzwerk $g_{\theta t}$  nur die globalen Sichten zur Verfügung stehen, bekommt das Netzwerk $g_{\theta s}$ zusätzlich die lokalen Ansichten. Diese fördert eine Korrespondenz von den einzelnen geringeren skalierten Sichten zu den globalen Ansichten. \\
+		
+		In jeder Iteration werden die Parameter des Netzwerkes  $g_{\theta t}$ durch einen gleitenden Durchschnitt (EMA) \cite{emaHe2019} der vorherigen Iterationen des Netzwerkes  $g_{\theta s}$ neu initialisiert.
+		Dabei werden die Parameter mit  
+		\[
+		\theta_{t} \leftarrow \lambda\theta_{t} +(1-\lambda)\theta_{s}
+		\]
+		reinitialisiert. $\lambda$ folgt während dem Training einem Cosinus-Scheduler von 0.995 bis 1 \cite{bootstrapSelfSupGrill2020}. Dies kann als einen Mittlung der stochastische Approximation  mit einem exponentiellen Decay verstanden werden. Caron et. al. zeigen damit, dass das durch den Scheduler initialisierte Netzwerk $g_{\theta t}$ qualitativ bessere Ergebnisse als das Netzwerk  $g_{\theta s}$ erzielt. Dadurch wird das Training des Netzwerks $g_{\theta s}$, welches versucht die Ergebnisvektoren von $g_{\theta t}$ zu approximieren, geleitet.  \\
+		Gegen einen Dimensionskollaps wird in DINO mit einer Zentrierung und Schärfung des gleitenden Durchschnitts der Ausgabe des Netzwerkes $g_{\theta t}$. Selbstüberwachte Methoden wie DINO tendieren dazu, nach trivialen Lösungen zu suchen. Um dies zu verhindern muss ein Mechanismus gegen Dimensionskollaps implementiert werden. Zentrieren hilft dem Modell dabei, dass sich keine der Dimensionen als dominant hervorhebt aber verstärkt den Kollaps. Das Schärfen verringert hingegen den Kollaps zu gleichmäßigen Verteilung aber lässt eine Dimension dominant werden. beim Ausführen beider Operationen, wird ein Gleichgewicht zwischen diesen hergestellt.    
+		
+		
+	\section{STEGO: Self-supervised Transformer with Energy-based Graph Optimization}
+		\label{ansatz:stego}
+		
+		Das STEGO \cite{STEGOhamilton2022unsupervised} Modell wird in seiner Standardkonfiguration verwendet. Diesem Netzwerk liegt das DINO \ref{dino} Modell $ F $ als Backbone zugrunde. Aufbauend darauf ist eine Segmentations-Head $ S $ integriert, welches ein simples Feed-Forward Netzwerk darstellt. Der Aufbau dieses besteht aus einem Dropout gefolgt von einem linearen Netzwerk aus einem conv2d Layer und anschließendem sequenziellen Bock aus conv2d, ReLU und einer weiteren conv2d. Die Faltungen werden jeweils mit einem rezeptiven Feld von (1x1) ausgeführt. \\
+		Während des gesamten Trainings wird lediglich das Netzwerk $ S $ trainiert. Das Backbone $ F $ wird hierbei eingefroren. Dies ermöglicht es diesem Netzwerk eine schnellere Konvergenz zu erzielen. 
+		Um das Modell Eingabegrößen unabhängig 
+
+		
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=\textwidth]{Graphiken/models/stego_arch.png}
+			\caption{STEGO Architektur mit exemplarischen Daten. Berechnung K-Nächste Nachbarn(Oben). Berechnung Loss (Mitte und Links). Darstellung des Segmentations Kopfes(Rechts). Vorhersagemodell(Unten) }
+			\label{fig:stego_arch}
+		\end{figure}
+		
+		  
+	\section{STEgeo: Self-supervised Transformer with GEOmetric feature loss}
+	\label{ansatz:STEgeo}
+		
+		
+		Das Modell STEgeo ist eine Abwandlung des STEGO \cite{STEGOhamilton2022unsupervised} Modells. STEgeo soll sich die symmetrisch auftretenden Defektestrukturen für die Segmentation zu nutze machen. Da der Wafer eine Symmetrie zu seinem Zentrum aufweist und die Defektklassen (vgl. Kapitel \ref{Defekte!!!}) der äußeren und inneren Greifer, Bandstrukturen und Positionierer zum einen als Paarkombination aber auch symmetrisch zum Zentrum vorkommen, kann eine Verlustfunktion für die vorliegenden Daten erarbeitet werden.
+		
+		Der neu gebildete Verlust schließt die Position der betrachteten Bildausschnitte, $p1$ und $p2$, mit in die Berechnung des Verlustes ein. Für den Verlust $G_{geo}$ wird das Produkt aus der gewichtete Distanz $ wd$ und der Tensorkorrelation \ref{sec:STEGOLoss} der Bildausschnitte gebildet.
+		\begin{equation}
+			L_{geo} = W_{p1_p2} * T_{corr_{p1_p2}}
+			\label{eq:STEgeo}	
+		\end{equation}
+		
+		
+	
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=\textwidth]{Graphiken/models/STEgeo_arch}
+			\caption{STEgeo Architektur mit exemplarischen Daten. Bildausschnitts Distanzen mit Gewichtungsfunktion(Oben Links) Bildausschnitts Erstellung und Positionsberechnung (Oben Rechts). Berechnung Loss (Mitte und Links). Darstellung des Segmentations Kopfes(Rechts). Vorhersagemodell(Unten) }
+			\label{fig:stego_arch}
+		\end{figure}
+	
+		$W_{p1_p2}$ (\ref{eq:STEgeo_w}) berechnet die Gewichtung der Bildausschnitte aus dem Abstand zwischen den Bildausschnitten. Die dafür notwendige Distanz $d_{p1_p2}$ wird über die L1 Distanz der Bildpukte berechnet. Der Abstand zwischen den Ausschnitten wird dann auf den Wertebereich zwischen 0 und 1 skaliert. Dabei stellt 1 den Maximalen Abstand $d_{max}$ \ref{eq:STEgeo_maxAbs}, mit der Bildbreite $i_b$ bzw. Bildhöhe $i_h$ und Bildausschnittsbreite $p_b$ bzw. Bildausschnittshöhe $p_h$, dar.\\
+		
+		\begin{equation}
+			W_{p1p2} = -0.69 * \arctan(\frac{c*(d_{p1_p2} + t)}{\pi}+ 0.02) 
+			\label{eq:STEgeo_w}
+		\end{equation}
+	
+		\begin{equation}
+			d_{p1p2} = \sqrt{(|p1_x|+|p2_x|)^2+(|p1_y|+|p2_y|)^2}
+			\label{eq:dist_p1_p2}
+		\end{equation}
+	
+		\begin{equation}
+			\begin{aligned}
+				d_{max_x} &= \frac{i_b}{2} - p_b	\\	
+				d_{max_y} &= \frac{i_h}{2} - p_h\\
+				d_{max} &= \sqrt{d_{max_x}^{2} + d_{max_y}^{2}}
+			\end{aligned}
+			\label{eq:STEgeo_maxAbs}
+		\end{equation}	
+		
+		Mit den verschiedenen Faktoren von $W_{p1_p2}$ können verschiedene Szenarien realisiert werden. Für eine geringere Toleranz der Verschiebung zwischen den beiden Bildausschnitte ist ein kleineren Wert für $t$ zu wählen und für einen steileren Übergang zwischen positiver und negativer Verstärkung der Korrelation ist ein größeres $c$ zu wählen. Die Abbildung \ref{fig:STEgeo_func_plot_dist} illustriert diese Gewichtung mit verschiedenen Parametern. \\ 		
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=8cm,height=8cm]{Graphiken/STEgeo/function_plot}
+			\caption{Funktion zur Gewichtung der Distanz zwischen zwei Bildausschnitten mit c: Steigungskonstante und t: x-Achsen Verschiebung}
+			\label{fig:STEgeo_func_plot_dist}	
+		\end{figure}
+	
+		Beispiele zur Gewichtung zwischen zwei Bildausschnitten ist für Punktsymmetrie in Abbildung \ref{fig:stegopunktsym}, und für Achsensymmetrie in X beziehungsweise Y Richtung in Abbildung \ref{fig:stegoachsensym} zu sehen.
+		 
+		\begin{figure}[h!]
+			\centering
+			\subfloat[\centering Beispiel 1]{{\includegraphics[width=7cm]{Graphiken/STEgeo/STEGOpunktsym1} }}%
+			\qquad
+			\subfloat[\centering Beispiel 2]{{\includegraphics[width=7cm]{Graphiken/STEgeo/STEGOpunktsym1} }}%
+			\caption{Visualisierung der Distanzvektoren anhand von Beispielen bei Punktsymmetrie}
+			\label{fig:stegopunktsym}
+		\end{figure}
+	
+		\begin{figure}[h!]
+			\centering
+			\subfloat[\centering X-Achsensymetrie]{{\includegraphics[width=7cm]{Graphiken/STEgeo/STEGOachssymX} }}%
+			\qquad
+			\subfloat[\centering Y-Achsensymetrie]{{\includegraphics[width=7cm]{Graphiken/STEgeo/STEGOachssymY} }}%
+			\caption{Visualisierung der Distanzvektoren anhand von Beispielen bei Achsensymmetrische}
+			\label{fig:stegoachsensym}
+		\end{figure}
+		
+		\textcolor{red}{dashed und cross erklären ->}
+		
+		Für die Tensorkorrelation $L_{corr}$ (\ref{eq:tensorCorr}) wird das Tensorprodukt der Feature Tensoren gebildet. Dabei werden die Tensoren $F$ und $S$ Elementweise miteinander multipliziert\cite{STEGOhamilton2022unsupervised}. Der Tensor $F$ ist dabei aus dem Backbone und der Tensor $S$ aus dem darauf aufgesetzten Netzwerk wie in Kapitel \ref{ansatz:stego} beschrieben. 
+		
+		\begin{equation}
+			L_{corr}(x, y) = - \sum_{hwij}{F_{hwij} * S_{hwij}}
+			\label{eq:tensorCorr}
+		\end{equation}
+		
+		Ein Eigenschaftstensor lässt sich dabei mithilfe von Formel \ref{eq:STEGOfeatureCorr} berechnen. $C$ sind dabei die Bildkanäle und $h,w$ sowie $i,j$ die räumlichen Dimensionen. Diese spiegeln die Kosinus Ähnlichkeit der Eigenschaften von Tensor $f$ an Position $h,w$ und Tensor $g$ an Position $i,j$ wieder. 
+		\begin{equation}
+			F_{hwij} := \sum_{c} \frac{f_{chw}}{|f{hw}|} \frac{g_{cij}}{|g{ij}|}
+			\label{eq:STEGOfeatureCorr}
+		\end{equation}
+		
+		
+		
+		
+
+
+%\subsection{ALT}
+%Das Foundation Modell Segment Anything (SAM) \cite{SAMKirillov2023} ist ein Ansatz, welcher eine gute Zero-Shot Adaption auf andere Problemstellungen hat. Foundation Modelle werden über Tansfer Lernen und den Lernmaßstab aktiviviert. \\
+%Foundation Modelle haben es geschafft, dass es aktuell die bislang Höchste Homogenisierung der Modelle gibt. Dies beutet, dass beispielsweise bezogen auf NLP Probleme fast alle Modell von den wenigen verfügbaren NLP Modellen, wie BERT oder BART, adaptiert wurden. \\
+%Um SAM zu entwickeln wurde der Datensatz SA-1B erstellt, welcher 11 Millionen Bilder mit über einer Milliarden Labeln enthält. Dies ist mehr 400 mal mehr Label als bisherige Datensätze für Segmentierungsaufgaben \cite{SAMKirillov2023}. Die Bilder welche in diesem Datensatz verwendet wurden haben eine mittlere Größe von 3300 x 4950 Pixeln. Die zugehörigen Labels wurden alle maschinell und nicht händisch generiert. \\
+%Die Qualität der automatisch generierten Label ist so hoch, dass außschließlich diese in den Datensatz SA-1B eingeflossen sind. Zur Überprüfung der Labelqualität, wurden die generierten Label mit professionell erstellten Annotationen und verschiedenen Labeleigenschaften anderer Datensätze verglichen. Dabei wurde eine IoU zwischen den maschinell und händisch annotierten Daten von über 90 \% für 94\% der Paare erzielt. Weiter wurde die Räumliche Verteilung der Zentren der Objekte analysiert. Kirillov et. al. zeigen, dass ihr Datensatz eine höhere Abdeckung der Bildecken, im Vergleich zu anderen verteilten Datensätzen wie ADE20K\cite{ade20kZhou2018semantic}, hat. Weiterhin wurde die Label-Konkavität überprüft.
+
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=\textwidth]{Graphiken/SAM_architektur.png}
+%	\caption{Architektur des Segment Anything Modells}
+%	\label{fig:sam_arch}
+%\end{figure}
+
+
+		
+		
+		

@@ -1,0 +1,81 @@
+\chapter{Einleitung}
+\label{chap:einleitung}
+\section{Motivation}
+
+
+Ladungsträger-Selektiven Solarzellen sind delikate Komponenten, die hinsichtlich jedes Prozess-Schritts optimiert werden müssen, um einen hinreichenden Wirkungsgrad zu erreichen. Bei der Herstellung von Heterostrukturierten-Solarzellen(HJT), auch bekannt als Silizium-Heterostrukturierte-Solarzellen(SHJ), wird innerhalb mehreren Prozessschritten, amorphe Silizium (a-Si), kristaline Silizium (c-Si), Indium Zinn Oxid(ITO) und transparente leitende Oxid(TCO) Schichten, auf einen Silizium Wafer aufgebracht. Eine genau Abfolge der verschiedenen nacheinander aufgetragenen Schichten ist in Abbildung \ref{fig:cell_arch} ersichtilich.
+
+   \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth ]{Graphiken/SHJ_cell_architecture.png}
+    \caption{Schematischer Aufbau eines Wafers als Silicon Heterojunction-Solarzelle}
+    \label{fig:cell_arch}
+\end{figure}
+Die Wafer müssen von einem Prozessschritt zum nächsten transportiert werden. Beim Kontakt der Wafer mit den Transportapperaturen Können sich Partikel auf der Oberfläche des Wafers ablagern. Dies führt zu einem Einschluss dieses Partikels zwischen zwei Schichten. Durch den generierten Einschluss hat der Wafer an dieser Stelle eine verminderte Ladungsträgerlebensdauer und somit an dieser Stelle einen Defekt.   \\
+Der Transport der Wafer zu den einzelnen Produktionsschritten wird über Hilfsvorrichtungen, wie in Abbildung \ref{fig:prodSchematic} dargestellt, realisiert. 
+
+\begin{description}
+    \item [a) Carrier] Bei weiteren Strecken oder zur Zwischenlagerung werden die Wafer in Carrier verwahrt. Diese Können mehrere Wafer gleichzeitig halten.   
+    \item [b) Transportbändern] Innerhalb einer Maschine Werden die Wafer mittels Tansportbändern bewegt. Damit die Wafer korrekt auf den Transportbändern ausgerichtet sind, werden diese Mittels Schiftern positioniert.
+    \item [c) Greifer] Das Laden zwischen Carriern und Transportbändern wird mittels Vakuum Greifern realisiert. Diese 
+\end{description}
+
+
+ 
+ \begin{figure}[h!]
+     \centering
+     \includegraphics[width=\textwidth]{Graphiken/ProductionSchematic.png}
+     \caption{Darstellung des Handlings innerhalb eines Produktionsteilschrittes }
+     \label{fig:prodSchematic}
+ \end{figure}
+
+\textcolor{red}{Hier text zu Effizienz von HJT Zellen}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.6\linewidth]{Graphiken/hjt_efficiency_trend}
+	\caption{Entwicklung der Moduleffizenz von 2012 bis 2022; es wird der Median und Interquartile Abstand für mono-Si SHJ(HJT), mono-Si und poly-Si Module gezeigt \cite{hjttrendKräling2022}}
+	\label{fig:hjtefficiencytrend}
+\end{figure}
+
+In Folge der mechanischen Handhabung, gibt es mikroskopischen Abrieb der Gerätschaften aber auch eine Akkumulation von Verunreinigungen, welche auf den Wafern zurückbleibt\cite{Fischer.2019} \cite{Fischer.2022} \cite{particle_image_Fischer2019}. Zudem werden bei verschiedenen Prozess Schritten hohe Temperaturen zum Aufbringen der Schicht benötigt. Sowohl der mechanische als auch der Wärmeeinfluss führen beim Auftrag einer Schicht zu einem Defekteinschluss. Dies bedeutet wiederum, dass an dieser Stelle des Zelle eine niedrigere Effizienz erzielt werden kann. In der Schlussfolgerung bedeutet dies, dass diese Solarzelle insgesamt eine verringerte Lebensdauer und somit auch einen verringerten Wirkungsgrad hat.\cite{Fischer.2019b} \\ 
+Infolgedessen ist eine umfassende Qualitätssicherung unerlässlich, um eine möglichst hohe Qualität der prozessierten Solarzellen sicher zu stellen. 
+
+
+Eine Qualitätssicherung beinhaltet immer die Auswertung einer Datengrundlage.
+
+Maschinelles Lernen kann einen erheblichen Beitrag in der Analyse und Charakterisierung erzeugen, indem sich anhand von Daten genaue Vorhersagen treffen lassen, um eine aussagekräftige Entscheidung für ein gegebenes Problem zu erzielen. \\
+Für viele Ansätze des Maschinellen Lernens müssen die Daten erst aufwändig bearbeitet werden, bevor sie von einem Netzwerk  als gepaarte Daten im Training verwendet werden können. Diese Ansätze werden überwachtes Lernen genannt. Einen überproportional großer Anteil der Kosten der Vorverarbeitung nimmt dabei das Annotieren der Bilder ein, da für Annotationen mit geforderter Qualität ein großes Fachwissen benötigt wird. \\
+Um diesen Teil der Vorverarbeitung der Daten zu eliminieren, gibt es eine Klasse an Methoden, die sich unter dem Begriff des un-überwachten Lernens zusammenfassen lassen. Diese sollen zum einen eine Reduktion der Notwendigkeit von Experten/Expertinnen im Annotationsprozess und gleichzeitig eine robustere Anwendung auf neue Datensätze ermöglichen. Dies bedeutet somit, dass die Kosten der Daten-Vorbereitung sinken. \\
+Ob ein Datensatz gut ist lässt sich anhand von drei Faktoren ermitteln. Der Qualität , der Quantität und der Variabilität des Datensatzes. Da diese Faktoren bei der Erstellung eines  Datensatzes genau berücksichtigt werden müssen, ist jede Verringerung der Komplexität ein Zugewinn. Zudem entscheidet die Güte der Daten auch direkt über die benötigte Zeit, welche ein Modell benötigt um zu konvergieren.
+
+\section{Beitrag dieser Arbeit}
+
+In dieser Thesis werden unüberwachte Lernmethoden verwendet, um Defektstrukturen auf Solarzellen, anhand von photolumineszens-Messungen, zu segmentieren. 
+Die Anwendung von unüberwachten Lernmethoden zur Segmentierung von Defekten in Photolumineszenz-Messungen wurde bisher noch kaum getestet. Um die Ziele dieser Arbeit zu erreichen, wird ein Datensatz aufbereitet, überwachte und unüberwachte Lernmodelle implementiert, ein unüberwachtes Modell erweitert und eine Analyse der verschiedenen Ergebnisse hinsichtlich ihrer Qualität durchgeführt. Diese Arbeit soll die Grenzen der verwendeten überwachten und unüberwachteen Methodiken identifizieren und gegenüberstellen.
+
+\subsection*{Datensatzerstellung}
+Es wurden drei Datensätze erstellt und aufbereitet. Der Datensatz DS\textunderscore unsup wurde aus verschiedenen Messdaten, welche einen Querschnitt von Industrieproben darstellen, zusammengestellt. 
+Für den  Datensatz DS \textunderscore sup wurde eine repräsentative Auswahl von Daten getroffen, welche mit Klassenzuordungen auf Pixelebene annotiert wurden. Dieser ermöglicht es, Modelle mit einem überwachten Lernansatz zu trainieren und die Analyse der verschiedenen Lernmodelle quantitativ zu bewerten. Zur weiteren Aufbereitung wurden die Daten, als Teil der Augmentation wie in Kapitel \ref{sec:Experiments} beschrieben, aliniert.   
+
+\subsection*{Anwendung von verschiedenen überwachten und unüberwachten Lernmodellen}
+
+Es wurden  vier verschiedene Modelle implementiert und trainiert. Davon sind zwei dieser Modelle mit einem überwachten Lernprozess und zwei mittels einer unüberwachten Methode trainiert. 
+\begin{enumerate}
+    \item Für einen Referenzpunkt wurde ein U-Net \cite{UNETRonneberger2015} für sieben Klassen implementiert. Es wurden verschiedene Gewichtungen der Klassen, Optimierungsfunktionen sowie Verlustfunktionen analysiert. Das Modell wird in Kapitel \ref{sec:unet} beschrieben. 
+    \item Für einen zweiten Referenzpunkt als ``zero-shot`` Transfer Ansatz wurde Segment Anything \cite{SAMKirillov2023} implementiert. Dieser Ansatz wurde mit dem erstellten Datensatz trainiert, um eine Aussage über die ``zero-shot`` Qualität des Diskriminators treffen zu können. 
+    Die Modellparameter wurden für eine breitere Vergleichbarkeit angepasst. Das Modell wird in Kapitel \ref{sec:sam} beschrieben.
+    \item  Als unüberwachten Lernmodell wird auf der Grundlage eines Vision Transformer \cite{ViTdosovitskiy2021image} das Verfahren von Caron et. al. \cite{caron2021emerging} als Self-Supervised Ansatz angewendet. Das verwendete Modell wird in Kapitel \ref{sec:dino} beschrieben. Das Modell wird mit variierenden Parametersätzen trainiert. 
+    \item  Als weiteres unüberwachtes Lernodell wird das von Hamilton et. al. verwendete Verfahren \cite{STEGOhamilton2022unsupervised} implementiert und trainiert. Das Modell wird in Kapitel \ref{sec:stego} beschrieben. 
+    Dieses Modell wird zusätzlich verwendet um eine auf die Daten angepasste Verlustfunktion zu trainieren.Die Parameter wurden gezielt variiert, um eine bestmögliche Anpassung auf den Datensatz DS\textunderscore unsup zu erreichen. Die Dokumentation der entwickelten Verlustfunktion befindet sich in Kapitel \ref{sec:stegeo}
+    
+\end{enumerate}
+\subsection*{Analyse der Ergebnisse}
+ Die Ergebnisse werden hin sichtlich der Eignung für die entwickelten Datensätze, der Fehleranalyse, Relevanz und Einfluss der einzelnen Modellparameter, im Vergleich zu den implementierten Modellen und auch im Vergleich zur Literatur analysiert. Mit den im Datensatz DS \textunderscore test vorhandenen Annotationen, lassen sich die Ergebnisse qualitativ und quantitativ vergleichen. 
+ Die Ergebnisse und eine detaillierte systematische Modellanalyse werden in Kapitel \ref{chap:results} vorgestellt und in Kapitel \ref{chap:conclusion} eingehend diskutiert.  
+
+
+
+
+
+

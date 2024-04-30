@@ -1,0 +1,33 @@
+\chapter{Diskusion}
+\label{chap:discussion}
+
+- Modelle wurden erfolgreich implementiert und verfeinern (anpassung auf daten)
+- Diskusion ist eine Bewertung der Ergebnisse
+
+
+Das Ziel dieser Arbeit war die Segmentierung von Defekten in Photolumineszenz Messungen von HJT-Solarzellen mittels Deep-Learning Methoden.Bei den zu detektierenden Defekte handelt es sich ausschließlich um Strukturen, die durch Transportvorrichtungen innerhalb der Solarzellenprozessierung eingebracht werden. Darüber hinaus wurde untersucht, ob unüberwachte Lernmethoden eine mögliche Alternative zu überwachten Lernmethoden, für diesen Anwendungszweck mit entsprecheneden Daten, darstellen um eine einfachere Adaption auf weitere Zellen zu erreichen und die \textcolor{red}{Kosteneffizienz (besser erklären) } zu erhöhen. Die Defektsegmentierung dieser Zellen ist Teil der Charakterisierung von HJT Solarzellen. \\
+Die im Kapitel \ref{chap:results} vorgestellten Ergebnisse zeigen, dass die Defekte mit Hilfe von Photolumineszenz Messungen erfolgreich segmentiert werden können. \\
+Die Experimente der Überwachten Lernmethoden wurden auf dem händisch erstellten Datensatz mit Datenpaaren aus Messung und Label auf Pixelebene trainiert und evaluiert. 
+Die trainierten Modelle des Überwachten Lernens zeigten in der Qualitativen Auswertung sehr gute Ergebnisse, welche 
+
+  
+
+
+\begin{itemize}
+    \item Reproduzierbarkeit im vgl zu supvervised Lerning nicht vorhanden (Vergleich zu aktuellen State of the Art (iou,...) ) <- Mathias fragen 
+    -> unterschied zu standard Datensätze-> Farbbilder, Anzahl der Klassen 
+    \item  STEGO
+    1. Backbone 
+    2. verschiedene Vorfaktoren (in ein plot)
+        2.1 Kleinere Gewichte erzeugen kleineren Loss 
+            höhere Acc , allerdings umgekehrt in den visuellen Ergebnissen -> niedrigere Losses erzeugen schlechtere visuelle Bilder
+        2.2 Cluster Loss starker einfluss auf Total loss
+            Wenn Gewichte kleiner gewählt,  dann hat Cluster loss stärkerer Einfluss 
+    3. im unsupervised fall keine gewichtung des Hintergrundes -> vllt deswegen Metriken keinen aufschluss auf die quantitative Qualtiät der Bilder
+    !!! Metriken (Acc, IoU) spiegeln nicht umbedingt die visuelle qualität der Daten wieder -> Anpassung des Losses 
+    Angepasster Loss mit vergleichbaren Gewichtungen -> geo <-> nicht geo
+        -> im bezug auf Losses werden Ergebnisse besser, allerdings visuell nicht
+        -> für self04 b04 knn02 b04 rnd04 b02 stimmern Losses mit visuellen Ergebnissen überein -> niedrigerer Loss -> bessere visuell Auswerung
+        -> niedrigere neg Loss Werte  aber höhere Streuung in negativ loss
+    STEGO sehr fragil, kleine änderungen in der Parameter -> große Auswirkungen
+\end{itemize}

@@ -1,0 +1,54 @@
+\acswitchoff 
+\babel@toc {ngerman}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Schematischer Aufbau eines Wafers als Silicon Heterojunction-Solarzelle}}{1}{figure.caption.7}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Darstellung des Handlings innerhalb eines Produktionsteilschrittes }}{2}{figure.caption.8}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces Entwicklung der Moduleffizenz von 2012 bis 2022; es wird der Median und Interquartile Abstand für mono-Si SHJ(HJT), mono-Si und poly-Si Module gezeigt \blx@tocontentsinit {0}\cite {hjttrendKräling2022}}}{3}{figure.caption.9}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Blick in die Produktion mit Transportvorrichtungen wie Greifern und Förderbändern\blx@tocontentsinit {0}\cite {tray_img23}}}{8}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces eines Vakuum Greifers mit resultierenden Partikeln. Aufgenommen mit einem Rasterelektronenmikroskop \blx@tocontentsinit {0}\cite {particle_image_Fischer2019}}}{9}{figure.caption.14}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Korrelation des normalisierten Pseudoverlustes $\eta $ durch eine bei der Handhabung induzierten Defekt. Diese wird für verschiedene Temperatur und Material abhängige Teilchendichte angegeben \blx@tocontentsinit {0}\cite {impactParticlesFischerrefId0} PU = Polyurethan , PEEK = Polyetheretherketon}}{10}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Exemplarische Darstellung einer PL Messung}}{12}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Darstellung einer überwachten Lernstrategie. Daten-Label Paar trainiert Neuronales Netz. Testdaten können mit einem erfolgreich trainierten Netz in korrekt gelernte Klassen überführt werden.}}{14}{figure.caption.23}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Beispielhafte Darstellung eines überwachten Lernverfahren. Neuronales Netz trainiert lediglich mit Daten ohne . Testdaten können mit einem erfolgreich trainierten Netz in korrekt gelernte Klassen überführt werden.}}{16}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Expemplarische Darstellung eines Vision Transformers \blx@tocontentsinit {0}\cite {ViTdosovitskiy2021image}}}{17}{figure.caption.25}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Überblick der PL Messdaten mit verschiedenen Prozess Rezepten}}{26}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Datenbeispiel aus Datensatz \textit {HJT \textunderscore 1}(links) und \textit {SHJ \textunderscore 1}(rechts)}}{27}{figure.caption.32}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Überblick der differenzierten Defektstrukturen}}{28}{figure.caption.33}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Einzelner Convolution Block in dem modifizierten U-Net. Dieser besteht aus einem conv Schicht, BN und ReLU als Aktivierung.}}{32}{figure.caption.40}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Schematischer Aufbau eines U-net Modells mit einer Auflösung von 32x32 Pixeln am tiefsten Punkt}}{33}{figure.caption.41}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces DINO Architektur mit exemplarischen Daten}}{34}{figure.caption.42}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces STEGO Architektur mit exemplarischen Daten. Berechnung K-Nächste Nachbarn(Oben). Berechnung Loss (Mitte und Links). Darstellung des Segmentations Kopfes(Rechts). Vorhersagemodell(Unten) }}{37}{figure.caption.43}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces STEgeo Architektur mit exemplarischen Daten. Bildausschnitts Distanzen mit Gewichtungsfunktion(Oben Links) Bildausschnitts Erstellung und Positionsberechnung (Oben Rechts). Berechnung Loss (Mitte und Links). Darstellung des Segmentations Kopfes(Rechts). Vorhersagemodell(Unten) }}{38}{figure.caption.44}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Funktion zur Gewichtung der Distanz zwischen zwei Bildausschnitten mit c: Steigungskonstante und t: x-Achsen Verschiebung}}{39}{figure.caption.45}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Visualisierung der Distanzvektoren anhand von Beispielen bei Punktsymmetrie}}{40}{figure.caption.46}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Visualisierung der Distanzvektoren anhand von Beispielen bei Achsensymmetrische}}{40}{figure.caption.47}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Übersicht des Experiments mit verschiedenen Modellen}}{42}{figure.caption.48}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Erstellungsprozess der Annotationen mit Fraunhofer ISE internem Werkzuge}}{43}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Datenpaar aus Datensatz \textit {DS\textunderscore sup}}}{44}{figure.caption.51}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Unaliniertes Rohbild (links), welches Verzerrung und Verzeichnung aufweist und aliniertes Bild(rechts)}}{45}{figure.caption.53}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Exemplarischer Vergleich aus Experiment U-Net\textunderscore unwgtLoss mit Ausgangsbild (a), Annotation(b) und Vorhersage(c)}}{49}{figure.caption.55}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Trainingsverlauf des U-Net Modells mit ungewichteter Verlustfunktion}}{50}{figure.caption.56}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Gegenüberstellung von Ausgangsbild, Annotation und Vorhergesagtem Bild}}{51}{figure.caption.58}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Trainingsverlauf des U-Net Modells mit gewichteter Verlustfunktion}}{51}{figure.caption.59}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Visualisierung der Aufmerksamkeitskarten von DINO}}{52}{figure.caption.62}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Segmentation anhand der Aufmerksamkeitskarten aus dem DINO Modell ohne Pretraining}}{52}{figure.caption.63}%
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Vergleich der berechneten Tensorkorrelationen}}{53}{figure.caption.66}%
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Verlust des Modells}}{54}{figure.caption.67}%
+\contentsline {figure}{\numberline {6.9}{\ignorespaces Genauigkeit}}{54}{figure.caption.68}%
+\contentsline {figure}{\numberline {6.10}{\ignorespaces Veränderung der Vorhersage über Epochen}}{55}{figure.caption.69}%
+\contentsline {figure}{\numberline {6.11}{\ignorespaces Verlust des Modells}}{55}{figure.caption.70}%
+\contentsline {figure}{\numberline {6.12}{\ignorespaces Genauigkeit}}{56}{figure.caption.71}%
+\contentsline {figure}{\numberline {6.13}{\ignorespaces Veränderung der Vorhersage über Epochen ohne Transformationen des Ausgangsbildes}}{56}{figure.caption.72}%
+\contentsline {figure}{\numberline {6.14}{\ignorespaces Verlust des Modells}}{57}{figure.caption.73}%
+\contentsline {figure}{\numberline {6.15}{\ignorespaces Genauigkeit des Modells}}{57}{figure.caption.74}%
+\contentsline {figure}{\numberline {6.16}{\ignorespaces Veränderung der Vorhersage über Epochen mittel geometrischer Verlustfunktion}}{58}{figure.caption.75}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

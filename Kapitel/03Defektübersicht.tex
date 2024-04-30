@@ -1,0 +1,135 @@
+% --------------- NUR GLIEDERUNG HIER ------------------------------------
+\iffalse
+\begin{itemize}
+    \item Daten + Defekte
+        \item konkret die Daten beschreiben
+        \item Datenvorverarbeitung (Alinieren, Verzerrung, Verzeichung)
+        \item Bilder aus EUPVSEC für datenvielfalt benutzen / Unifomität der Daten -> Herausforderungen beschreiben
+        \item Defekt klassen
+        \item verschiedene Datensätze erklären (2 DS mit je 2 Messbatches) -> sprechende Namen verwenden -> als Schema darstellen 
+        \item welche Daten gelabelt -> beispiele Bild
+        \item Größe der Defekte und daraus folgende Eigenschaften (bsp. Patchsize, datenaugmentierung, warum nur wenig jitter +hue ,...) 
+        
+    \item Methodik für einzelne Netze
+        \item Einführung  als Schema (Backbone Head,...)
+        \item Vorstellung Bausteine als Intro -> wieso genau diese ausgewählt 
+        \item DINO
+            \item Schema Netzwerk und beschreiben wieso ausgewählt (im Hinblick auf Daten)
+            \item Parameter benennen + Daten Augmentation
+        \item SAM
+            \item Schema Netzwerk und beschreiben wieso ausgewählt (im Hinblick auf Daten)
+            \item Parameter benennen + Daten Augmentation
+        \item UNET
+            \item Schema Netzwerk und beschreiben wieso ausgewählt (im Hinblick auf Daten)
+            \item Parameter benennen + Daten Augmentation
+        \item STEGO
+            \item Schema Netzwerk und beschreiben wieso ausgewählt (im Hinblick auf Daten)
+            \item Parameter benennen + Daten Augmentation
+
+        \item Abgrenzung, wieso entsprechende Methodiken ausgewählt wurden 
+        \item Related Work -> Nachteile Abgrenzung zu nicht verwendeten Verfahren
+    \item Implentierung
+        \item 
+        \item Codebausteine -> Zitieren 
+\end{itemize}
+\fi
+% --------------- NUR GLIEDERUNG ------------------------------------
+ 
+\iffalse
+
+\definecolor{frhorange}{RGB}{242,148,0}
+\definecolor{frhblue}{RGB}{31,130,192}
+\definecolor{frhgr}{RGB}{23,156,125}
+\definecolor{frholiv}{RGB}{177,200,0}
+
+
+\fi
+
+
+
+
+%------------------ starts here ----------------------------------
+\chapter{Übersicht der Defekte und Daten}
+\label{chap:übersicht_der_defekte_und_daten}
+\iffalse
+Für die Auswahl von geeigneten Netzwerken zur Defekterkennung ist es nötig, verschiedene Fragen, im Bezug auf die Daten, genau zu betrachten:
+\begin{itemize}
+    \item Welche Strukturen sollen in den Daten erkannt werden?
+    \item Welche Datenausprägung ist vorhanden? 
+    \item Welche Zeitkomplexität darf nicht überschritten werden? 
+    \item Welche Güte ist für die Qualität der Vorhersagen relevant?
+\end{itemize}
+
+Da diese Fragen alle stark mit den vorhandenen Rohdaten in Verbindung stehen, müssen diese genau analysiert werden. 
+\fi
+
+ Für lernbasierte Modelle sind die Daten das wichtigste Element, da die von den Modellen erlernte Korrelation direkt aus den Datenelementen extrahiert werden.\\
+ Damit die Modelle erfolgreich trainiert werden können, müssen die Daten eines Datensatzes möglichst Gleich verteilt und angepasst auf das zu lösende Problem sein. Hier werden zwei Datensätze erstellt, welche für Überwachte und Unüberwachte Lernmodelle entwickelt werden.   
+ 
+ \section{Datenausprägung}
+  Die vorliegenden Daten kommen von Wafern, welche ein Industriepartner des Institut für Solare Energie der Fraunhofer Gesellschaft prozessiert hat. 
+  Die Zellen wurden in einem regulären industrienahen Prozess gefertigt und im Anschluss innerhalb des Fraunhofer Institutes vermessen. Dabei durchlaufen die einzelnen Proben mehrere Messverfahren. Diese Messverfahren, wie in Abbildung \ref{fig:fwis} dargestellt, können dabei vom Fraunhoferinstitut durchgeführt werden. Für diese Arbeit liegen lediglich die Daten aus den phololumineszenz Messungen vor. Die SHJ Zellen, welchen einen Aufbau wie in Abbildung \ref{fig:cell_arch} haben, wurden vor dem Auftrag der der Metallisierungsschicht vermessen.    
+
+  Die entstandenen Messdaten liegen in Form von Photolumineszenz Bildern von 4279 Wafern vor. Entsprechend der Prozessunterschiede werden diese in zwei Datensätze unterteilt. Die einzelnen Datensätze umfassen dabei Wafer, welche mit verschiedenen Rezepten prozessiert werden. Ein Überblick der verschiedenen Daten wird in Abbildung \ref{fig:dataset_overview} gegeben. Aus der Abbildung ist ersichtlich, dass sich Zellen deutlich in den Messungen unterscheiden. Die Helligkeitsintensität der einzelne Proben zeigen eine große Streuung und es sind viele verschiedene Strukturen zu erkennen. \\
+  Die Daten liegen als Photolumineszenz Messungen vor und wurden mit einer Größe von 1024 x 1024 Pixeln im verlustfreien Tagged Image File Format aufgenommen. Die vermessenen Proben haben eine Kantenlänge von 166 mm %\si{\milli \meter}\\
+
+  \begin{figure}[h!]
+      \centering
+      \includegraphics[width=1\textwidth]{Graphiken/dataset_overview.png}
+      \caption{Überblick der PL Messdaten mit verschiedenen Prozess Rezepten}
+      \label{fig:dataset_overview}
+  \end{figure}
+ 
+
+  Die Datensätze \textit{SHJ \textunderscore 1}, \textit{SHJ\textunderscore 2} 
+  enthalten Bilder auf welchen Defekte sehr stark ausgeprägt sind. Die Datensätze \textit{HJT\textunderscore 1} und \textit{HJT\textunderscore 2} enthalten dagegen Daten in auf welchen nur wenige Defekte sichtbar sind.\\
+  Aus Diesen Daten wurden die Datensätze \textit{DS\textunderscore sup}, \textit{DS\textunderscore unsup} und \textit{DS\textunderscore test} erstellt. Die drei genannten Datensätze haben keine gemeinsamem Schnitt Menge.
+  Eine exemplarische Auswahl an Daten aus den Datensätzen \textit{SHJ\textunderscore 1} und \textit{HJT \textunderscore 1} ist in Abbildung \ref{fig:hjt_1_SHJ_1}.\\
+
+  \begin{figure}[hbt!]
+      \centering
+      \includegraphics[width=0.75\linewidth]{Graphiken/sample_all_ds.png}
+      \caption{Datenbeispiel aus Datensatz \textit{HJT \textunderscore 1}(links) und \textit{SHJ \textunderscore 1}(rechts)}
+      \label{fig:hjt_1_SHJ_1}
+  \end{figure}
+  
+  Während der Wafer des Datensatzes \textit{HJT \textunderscore 1} nur schwache und wenige dunkle Defektstrukturen aufweist, sind in dem Beispiel aus dem Datensatz \textit{SHJ \textunderscore 1} viele dunkle Strukturen, welche Defekte und Materialeinschlüsse widerspiegeln, zu sehen. 
+
+  
+
+
+
+
+  
+
+ \subsection{Defektbeschreibung}
+ \label{sub:defect}
+  Auf den Daten der Datensätze kommen sehr viele verschiedene Defekte vor. Dabei sind sechs Defektesignaturen signifikant und sollen im Zuge dieser Arbeit Segmentiert werden. 
+  Die Strukturen lassen sich dabei in Greifer-, Band-, Rand-, Ripple-, Riss- und Moving Beam-Ausprägungen unterteilen. Die Greifer Strukturen lassen sich weiter in Be- und Entladegreifer unterteilen. In Abbildung \ref{fig:defect_overview} sind eine Beispielhafte Ausprägung der Defekte ersichtlich. 
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Graphiken/dataset/defect_overview_2.png}
+    \caption{ Überblick der differenzierten Defektstrukturen}
+    \label{fig:defect_overview}
+\end{figure}
+
+  Die einzelnen Defekte sind dabei sehr klar in ihrer Strukturellen Ausprägung zu unterscheiden. 
+  Die Be- und Entladegreifer haben eine runde Struktur und sind Punktsymetrisch zu einander angeordnet. Die Entladegreifer befinden sich absolut Näher am Waferrand, verglichen mit den Beladegreifer. Diese Strukturen kommen überwiegend als vierer Paar vor. Diese Defekte werden von entsprechenden Unterdruckgreifern beim Be- und Entladen der Wafer erzeugt. Die Entladegreifer befinden sich näher am Waferrand, da für das Lösen der Greifer aus dem Carrier wesentlich mehr Energie benötigt wird als für das Beladen selbiger.
+  Banddefekte kommen als rechteckige Struktur über die gesamte Breite des Wafers vor. Diese entstehen über den Kontakt des Wafers zu den Transportbänder, über welche sie bei der Produktion geleitet werden um zwischen den einzelnen Bearbeitungsschritten hin und her transportiert zu werden.\\
+  Die Defektklasse der Positionierer (Walking Beam) lässt sich als rechteckige Struktur die parallel zu den Banddefekten läuft beschreiben. Diese befinden sich um das vertikale Zentrum der Zelle und entsteht beim Positionieren des Wafers auf dem Transportband über zwei Aktuatoren. \\
+  Unregelmäßige Strukturen, welche allerdings meist Punktförmig oder länglich sind, lassen sich zu der Defektklasse der Risse zählen. Dies können durch viele verschiedene Faktoren, während der gesamten Prozessdauer entstehen. Diese Defekte sind oftmals besonders stark auf den Photolunineszenz Bilder zu sehen. \\
+  Die Rand defekte zeichnen sich dadurch aus, dass diese an den Rändern des Wafers auftreten. Diese Können verschiedene Formen annehmen. Diese Defekte entstehen durch nicht korrekter Auftrag der einzelnen Schichten auf den Wafer. 
+  Als letzter signifikanter Defekt lässt sich der Ripple-Defekt deklarieren. Dieser tritt ebenfalls parallel zu den Bandabdrücken und den Posotionierern auf. Die Ripple Struktur zeichnet sich wiederkehrende starke Punktstrukturen ab oberen Rand des Wafers aus. Der Ripple Defekt wird von einer Apparatur erzeugt, welche über den Wafer läuft. 
+  Die Solarzellen weisen weitere Defektstrukturen, welche sich durch dunklere Farbverläufe in den photolumineszenz Bildern darstellen, auf, welche sich aber nicht eindeutig auf einen speziellen Defekt zurückführen lassen. Diese werden aus diesem Grund aus der Defektbetrachtung in dieser Arbeit außer Acht gelassen. 
+  Da die Intensität der Helligkeit die elektrische Leitfähigkeit darstellt, sind diese kleineren und relativ hellen Defekten im Vergleich zu beispielsweise den viel dunkleren und flächenmäßig größeren Beladegreifer-Defekten zu vernachlässigen.  
+
+
+
+   \subsection{Herausforderung der Daten}
+  Da die Daten aus realistischen Quelldaten generiert wurden, enthalten diese sehr spezifische Herausforderungen.
+  Die Datensätze SHJ\_1 und sHJ\_2 beinhalten fast ausschließlich Daten, welche einige Defekte immer aufweisen. Dies gilt besonders für Greifer und Banddefekte. Die verschiedenen Defekte werden in Abschnitt \ref{sub:defect} erläutert. Dies bedeutet, dass für die Segmentierung einige Klassen überrepräsentiert sind und andere unterrepräsentiert sind. Dies kann zur Folge haben, dass das zu trainierende Netzwerk ein Neigung zu den überrepräsentierten Klassen hat oder eine geringere Sensitivität gegenüber der unterrepräsentierten Klasse. Dies könnte allerdings auch eine Hürde bei der Auswertung, wie in Genauigkeitsmaß, darstellen. Dies könnte beispielsweise bedeuten, dass obwohl eine unterrepräsentierte Klasse nie erkannt wurde trotzdem eine Hohe Genauigkeit erzielt werden kann. \\
+  Eine weitere Herausforderung ist die Abstinenz von Annotationen. Dies macht die Auswertung von Netzwerken wesentlich schwerer, da diese erwarteten Segmentationsklassen nicht direkt mit einer Grundwarheit verglichen werden können. Eine Möglichkeit dem entgegen zu treten sind ein anderer Satz an Auswertungen. Einige Auswertungsmethoden, welche keine Grundwarheiten benötigen werden in Kapitel \ref{sec:metrics} erläutert. Zudem ist für das trainieren von überwachten Netzwerken eine annotierte Version der Daten zwingend Notwendig. Diese muss somit in ausreichender Güte erstellt werden.\\ 
+  Die Defekte kommen oftmals als Überlagerung der einzelnen Defekte vor. Besonders die Defekte, welche dynamisch vorkommen und somit nicht immer im gleichen Bereich des Bildes vorkommt. Durch die Überlagerung der Defekte können diese nur sehr schwer von einandere getrennt werden und somit auch nur schwer einzeln von einander Klassifiziert und Segmentiert werden. \\
+  Die Aufnahmen aus den Photolumineszenz Messungen weisen für die Defekte eine hohe Unschärfe auf. Dies macht es sehr schwer die einzelnen Defektkanten klar zu trennen. Da viele Defekte nur eine schwache Ausprägung haben, stellt dies eine weitere Hürde für das Annotieren der Daten auf Pixelebene aber auch für die Netzwerke. 
+  

@@ -1,0 +1,445 @@
+
+\chapter{Ergebnisse}
+\label{chap:results}
+
+Die in Kapitel \ref{chap:experiments} beschriebenen Experimente umfassen eine Vielzahl an Parameterkombinationen. Um die Ergebnisse übersichtlich Darstellen zu können werden die Ergebnisse in drei Teilen dargestellt. In Kapitel \ref{sec:results_supervised} werden die experimentellen Ergebnisse der Überwachten Lernmethoden dargestellt. Kapitel \ref{sec:results_unsupervised} enthält die Ergebnisse aus den Experimenten der Unüberwachten Lernmodellen. Es werden in jedem dieser Kapitel exemplarisch Bilder der entsprechenden Vorhersagen und der entsprechenden Metriken gezeigt.\\
+Als letztes wird dann in Kapitel \ref{sec:results_comparison_models} ein quantitativer Vergleich zwischen allen Experimenten gegeben. 
+
+
+\section{Überwachtes Lernen}
+\label{sec:results_supervised}
+  \subsection{U-Net}
+  Das U-Net wurde auf dem Datensatz für das Überwachte Lernen trainiert. Das Modell hat 8 Eingabe Kanäle welche die einzelnen Klassen des Modells repräsentieren.
+  \subsubsection*{U-Net mit ungewichteter Verlustfunktion (U-Net\textunderscore unwgtLoss)}
+  Im Experiment \textcolor{red}{ref U-Net\textunderscore unwgtLoss} wird eine Standardversion des U-Net Modells genutzt und der Verlust wird über die Kreuzentropie berechnet. Dabei werden die einzelnen Klassen innerhalb der Verlustfunktion nicht gewichtet um ein Ungleichgewicht der Klassenvorkommen der Daten auszugleichen.\\
+  Die Abbildung \ref{fig:unet_unwgt_pred} zeigt exemplarisch das Eingabebild, die Annotation und die Vorhersage mit diesem Modell. Die Annotation zeigt 7 verschiedene Klassen. Diese setzen sich aus 6 Defektklassen und dem Hintergrund zusammen.\\ 
+
+  % unweighted
+    \begin{figure}[h!]
+        \begin{subfigure}[h]{0.32\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/unet/unwgt/orig_104805_FWIS-PLI_230206113204_104805.png}
+            \caption{}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.32\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/unet/label_104805_FWIS-PLI_230206113204_104805.png}
+            \caption{}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.32\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/unet/unwgt/msk_104805_FWIS-PLI_230206113204_104805.png}
+            \caption{}
+        \end{subfigure}%
+        \caption{Exemplarischer Vergleich aus Experiment U-Net\textunderscore unwgtLoss mit Ausgangsbild (a), Annotation(b) und Vorhersage(c)}
+        \label{fig:unet_unwgt_pred}
+    \end{figure}
+    
+  In der qualitativen visuellen Auswertung der Vorhersage, werden die äußeren Greifer (hell blau) sehr gut erkannt und haben eine große Übereinstimmung mit der Annotation. Die Bandabdrücke (dunkel blau) werden ebenfalls in einer hohen Güte erkannt und stimmen sehr gut mit der händisch gelabelten Bild überein. Am oberen Rand der Vorhersage wird der Ripple Defekt (gelb) ebenfalls gut vorhergesagt, allerdings ins dies Klasse auch in weiteren Bereichen des Bildes zu sehen und stellt eine falsche Klassifizierung dar. Die die Entlade Greifer (cyan), Positionierer(rot) und Randdefekte (grün) werden alle nur partielle erkannt und enthalten eine hohe Fehlerquote. Für diese Defekte wurde keine gute Segmentation gefunden. Der Wafer (schwarz) und die umliegende Hintergrundfläche wird gut als ein Klasse erfasst. Über die Risse (orange) kann in diesem Exemplar keine Aussage gemacht werden, da keine vorhanden sind. 
+  
+
+
+
+  Eine quantitative Evaluation des Experimentes ist in Abbildung \ref{fig:unet_unwgt_metrics} aufgetragen. Es ist eine maximale Intersection over Union von \textcolor{red}{XX} zu sehen. Dies ist auf ... zurückzuführen. \textcolor{red}{hier noch Precision und Recall}
+
+  Der Trainings- und Validierungsverlauf des Verlustes zeigt, dass dies ein gut geeignetes Modell ist, und kein Overfitting oder Underfitting stattfindet. Sowohl der Trainings- als auch Validierungsverlust fallen sehr schnell und bleiben nach 70 Epochen sehr konstant. Der Validierungsverlauf ist dabei leicht größer als der Trainingsverlauf.   
+  
+    \begin{figure}[h!]
+         \centering
+         \includegraphics[width=\linewidth]{Graphiken/results/unet/unwgt/Metrics_unwgt.png}
+         \caption{Trainingsverlauf des U-Net Modells mit ungewichteter Verlustfunktion}
+         \label{fig:unet_unwgt_metrics}
+     \end{figure}
+     
+
+    
+         
+    \subsubsection*{U-Net mit gewichtete Verlustfunktion (U-Net\textunderscore wgtLoss)}
+    Das Experiment \textcolor{red}{ref U-Net \textunderscore wgtLoss} benutzt eine ähnliche Architektur wie Experiment \textcolor{red}{ref U-Net \textunderscore unwgtLoss}. Die Berechnung der Kreuzentropie Verlustfunktion wird jedoch gewichtet um einem Ungleichgewicht der Klassen vorkommen im verwendeten Datensatz entgegen zu steuern. \\
+    Die Qualitative Auswertung zeigt, dass eine Hohe Übereinstimmung zwischen der Annotation und dem Vorhersagebild besteht besonders gut werden Ripple(gelb), Entladegreifer(hell blau), Beladegreifer(cyan), Transportbänder(dunkel blau) erkannt. Auch wenn es für die Klassen Randdefekte(grün), Positionierer(rot) und Risse(orange) eine Übersegmentierung gibt, sind diese klar zu erkennen. Die Uniformität der einzelnen Segmentationen ist gegeben\\
+    Besonders kleine Strukturen wie Riss-Defekte werden schlecht erkannt. 
+    
+    
+    % weighted
+    \begin{figure}[h!]
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/unet/unwgt/orig_104805_FWIS-PLI_230206113204_104805.png}
+            \caption{}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/unet/label_104805_FWIS-PLI_230206113204_104805.png}
+            \caption{}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/unet/wgt/msk_104805_FWIS-PLI_230206113204_104805.png}
+            \caption{}
+        \end{subfigure}%
+        \caption{Gegenüberstellung von Ausgangsbild, Annotation und Vorhergesagtem Bild}
+        \label{fig:unet_wgt_pred}
+    \end{figure}
+    Die Quantitative Auswertung in Abbildung \ref{fig:unet_wgt_metrics} zeigt, dass mit diesem Modell eine IoU von \textcolor{red}{xxx} erreicht werden kann. Der Recall ist besonder hoch mit \textcolor{red}{xxx} und einer Precision von \textcolor{red}{xxx}. Nach 40 Epochen ist schon das Maximum der Intersection over Union erreicht und steigt bis zum Ende des Experiments nicht weiter. \\
+    Der Verlauf der Verlustfunktionen des Trainings und der Validation verlaufen die ersten 20 Epochen nahezu identisch. Ab Epoche 80 verlaufen die Graphen nahezu horizontal und der Verlust ändert sich nur noch miniöal. Der Verlust ist nach 100 Epochen mit 0.01 im Training und mit 0.0045 in der Validierung sehr gering. 
+    
+     \begin{figure}[h!]
+         \centering
+         \includegraphics[width=\textwidth]{Graphiken/results/unet/wgt/Metrics_wgt.png}
+         \caption{Trainingsverlauf des U-Net Modells mit gewichteter Verlustfunktion}
+         \label{fig:unet_wgt_metrics}
+     \end{figure}
+
+%  \subsection{Segment Anything}
+%     \subsection{Betrachtung der Trainingsverläufe}
+%     Exp 1 \\
+%     Exp 2 best
+% \subsection{Vergleich der Überwachten Lernmethoden}
+
+\subsubsection{U-Net mit vortrainiertem Encoder}
+
+\section{Unüberwachtes Lernen}
+	\label{sec:results_unsupervised}
+	\subsection{DINO}
+    
+    
+    \begin{figure}[h!]
+    	\centering
+    	\includegraphics[width=\linewidth]{Graphiken/results/dino/noPretrain/small/noTraining/1_all_attn-heads_localNormalized}
+    	\caption{Visualisierung der Aufmerksamkeitskarten von DINO}
+    	\label{fig:dino_1allattn-headslocalnormalized}
+    \end{figure}
+    
+    
+    \begin{figure}[h!]
+    	\centering
+    	\includegraphics[width=0.4\linewidth]{Graphiken/results/dino/noPretrain/small/noTraining/bnw-1}
+    	\caption{Segmentation anhand der Aufmerksamkeitskarten aus dem DINO Modell ohne Pretraining}
+    	\label{fig:dino_bnw-1}
+    \end{figure}
+    
+ 	\subsection{STEGO}
+
+    \subsubsection{STEGO mit DINO als Backbone}
+    Wie in Kapitel \ref{sec:Experiments} beschrieben Wurden verschiedene Konfigurationen von STEGO getestet und analysiert.
+    Es wurde ein nachtrainiertes Modell von DINO(vgl. \ref{sec:dino}) verwendet. Sowohl die Eingabe- als auch die Ausgabegröße ist 480px x 480px. Es wurde insgesamt 100000 Schritte trainiert was mit der verwendeten Datensatzgröße  
+    
+     % Exp Best
+
+
+
+
+
+
+
+
+
+
+      
+    \begin{figure}[h!]
+        \begin{subfigure}[h]{0.45\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/inter_cd.png}
+            \caption{ Korrelation zwischen einem Ausschnitt und einem k-Nächsten Nachbar Ausschnitt des Datensatzes}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.45\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/intra_cd.png}
+            \caption{ Korrelation zwischen einem Ausschnitt und sich selbst }
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.45\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/neg_cd.png}
+            \caption{ Korrelation zwischen einem Ausschnitt und einem zufällig gewählten Ausschnitt des Datensatzes}
+        \end{subfigure}
+        \caption{Vergleich der berechneten Tensorkorrelationen}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{Graphiken/results/stego/best/total.png}
+        \caption{Verlust des Modells}       
+        \label{fig:stego_best_loss}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{Graphiken/results/stego/best/Accuracy.png}
+        \caption{Genauigkeit}
+        \label{fig:stego_best_acc}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/original_img.png}
+            \caption{ Originalbild}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/step300_pred0.png}
+            \caption{300 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/step26496_pred0.png}
+            \caption{20000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/step42594_pred0.png}
+            \caption{40000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/step61041_pred0.png}
+            \caption{60000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/best/step99735_pred0.png}
+            \caption{100000 Steps}
+        \end{subfigure}%
+        \caption{Veränderung der Vorhersage über Epochen}
+        \label{fig:stego_best_iter}
+    \end{figure}
+
+     
+     %Exp noTransforms
+     
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/total.png}
+        \caption{Verlust des Modells}       
+        \label{fig:stego_noTrans_loss}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/Accuracy.png}
+        \caption{Genauigkeit}
+        \label{fig:stego_nTrans_acc}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/original_img.png}
+            \caption{ Originalbild}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/step300_pred0.png}
+            \caption{300 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/step20544_pred0.png}
+            \caption{20000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/step39810_pred0.png}
+            \caption{40000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/step60576_pred0.png}
+            \caption{60000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/noTransforms/step100008_pred0.png}
+            \caption{100000 Steps}
+        \end{subfigure}%
+        \caption{Veränderung der Vorhersage über Epochen ohne Transformationen des Ausgangsbildes}
+        \label{fig:stego_noTrans_iter}
+    \end{figure} 
+    
+     %Exp STEGeO
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/total.png}
+        \caption{Verlust des Modells}       
+        \label{fig:stego_geo_loss}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/Accuracy.png}
+        \caption{Genauigkeit des Modells}
+        \label{fig:stego_geo_acc}
+    \end{figure}
+    
+    \begin{figure}[h!]
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/orig_img.png}
+            \caption{ Originalbild}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/step600_pred0.png}
+            \caption{300 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/step14898_pred0.png}
+            \caption{20000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/step33945_pred0.png}
+            \caption{40000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/step59841_pred0.png}
+            \caption{60000 Steps}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}[h]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{Graphiken/results/stego/GEO/step99435_pred0.png}
+            \caption{100000 Steps}
+        \end{subfigure}%
+        \caption{Veränderung der Vorhersage über Epochen mittel geometrischer Verlustfunktion}
+        \label{fig:stego_geo_iter}
+    \end{figure} 
+
+
+    
+     Vergleichende Analyse der Verlustfunktion
+     Ähnlichkeitsmaß der features  
+     -> Negatives Ähnlichkeitsmaß immer schlecht -> parameter haben keinen Einfluss
+
+
+\section{Vergleich der Modelle}
+\label{sec:results_comparison_models}
+
+\subsection{Vergleich Experimente unüberwachtes Lernen}
+   Interpretation der einzelnen Lossgraphen 
+   Entgegenwirken der Parameter (Patchgröße, Datensatz anpassung, bias)
+   Geometrische Loss als Gegenpol > Beispiele 
+- STEGO -> hoher zusammenhang zwischen den patches die nicht ähnlich sind, da mit hoher wahrscheinlichkeit in zwei verschiedenen Patches ähnliche Features liegen.  
+
+%-------------------------------------------------------------------
+\iffalse
+
+
+\begin{itemize}
+    \item Plots:
+        \item Loss
+        \item mIoU
+        
+\end{itemize}
+
+\begin{enumerate}
+            \item Erklärungen der einzelnen Ergebnisse 
+            \item Vergleich zwischen den einzelnen Ergebnissen/Modellen  
+            \item Fehleranalyse
+            \item Eignung für in Fragestellung erläutertes Ziel (unsupervised Defect Detection possible?)
+\end{enumerate}
+
+
+
+
+Auswertung der einzelnen Ergebnissen
+In diesem Kapitel werden die Experimentellen Ergebnisse ausgeführt und erläutert. 
+Dabei sollen die Fragestellungen wie in \tdo{kapitel ref} dieser Thesis im Mittelpunkt stehen, und ob diese mit diesen Modellen bestand haben. 
+Besonders sollen folgende Fragen im Blick behalten werden:
+
+\begin{itemize}
+    \item Ist es möglich mittels un-überwachtem Lernen Defekte auf PL-Bildern zu erkennen?
+    \item Ist es möglich Defekte von einander zu trennen?
+    \item Wie hoch ist der Preis in der Genauigkeit im Vergleich zu überwachtem Lernen?
+    \item Wie hoch ist der Mehraufwand für das Annotieren der Bilder im überwachten Lernen?
+\end{itemize}
+
+Zunächst werden die Einzelnen Modelle auf diese Fragestellungen hin analysiert und anschließend gegenübergestellt.
+
+Für die Auswertung der verschiedenen Modelle wurde ein Datensatz zu Hilfe gezogen, welcher Annotationen auf Pixel ebene enthalten. Diese werden, bei den un-überwachten Modellen, ausschließlich zur Validation der Daten benutzt. Dies ist nötig, da es sonst sehr schwer ist die un-überwachten Methoden mit einer  Methodik zu evaluieren welche gut vergleichbar ist. Die hier verwendeten Methodiken zu Evaluation der Modelle wurde in \tdo[inline]{vgl kapitel Auswertungsmethodiken} beschrieben.     
+
+Da die U-Net \cite{Ronneberger.18.05.2015} Architektur als Grundlage und Referenz der wie in \tdo{ref zu kapitel angeben} beschrieben dienen soll, wird dies hier als erstes behandet. 
+Wie in \tdo{ref iou /precition/accuracy / recall von U-net} zu sehen ist, hat dieses Modell exzellenten Wert für die mIoU mit xxx 
+\tdo{abkürzung erklären}. 
+\tdo{einzelnen Defekte von einander trennen?}. Mit der erweiterten Datenaugmentation wird sogar ein Wert von xxx erreicht.
+
+Diese Ergebnisse sind jeweils nach xxx Epochen eingetreten. Bei der Betrachtung der Trainings-Loss und Validations-Loss Kurven ist ein ganz klarer abwärts Trend und keine Stagnation zu sehen. Der Recall liegt bei \textcolor{red}{xxx} und die Genauigkeit bei \textcolor{red}{xxx}. 
+% Hier noch Recall und Precition  einfließen lassen 
+Beim betrachten der vorausgesagten Daten ist die starke Übereinstimmung bei den Defekten, welche ...., mit den von Hand annotierten Daten zu sehen. Im Gegensatz dazu ist eine Schwäche bei den Defekt Klasse der ... zu sehen. Diese werden im Durchschnitt wesentlich schlechter erkannt und hier entsteht auch die größte Diskrepanz zwischen den vorausgesagten Klassen und der Ground-Truth \tdo{abkürzung}. Dies ist für beide Versionen dieses Netzes ähnlich. Sowohl das Netzwerk mit wenig Daten Augmentation als auch die Architektur mit größerer Variation in der Augmentation haben Probleme bei der genauen klassierung der gleichen Defekt-Klassen. 
+Die Defekte lassen sich wie auf \tdo{ref img} zu sehen ist sehr gut von einander trennen. Selbst die verschiedenen Bandstrukturen, Transportband und Shifter, welche sich an sehr ähnlichen Stellen auf den Bildern befinden werden gut von einander abgegrenzt. 
+Auch zu sehen ist dies bei den Greifer Klassen. Die Aufnahme Greifer werden ganz klar von den Abgabe Greifern klassiert.
+
+
+
+
+%---------------------------------------------
+\subsection{U-Net}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Graphiken/exp/uNet/unwgt/Metrics-supervisedAdamd5MCCEunwgt7class_11102023.png}
+    \caption{UNet Training mit ungewichteten Klassen für Loss }
+    \label{fig:unwgt_Unet}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Graphiken/exp/uNet/wgt/Metrics-supervisedAdamd5MCCEwgt-v3_7class_05082023.png}
+    \caption{UNet Training mit gewichteten Klassen für Loss }
+    \label{fig:wgt_Unet}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\linewidth]{Graphiken/exp/uNet/unwgt/orig_104805_FWIS-PLI_230206113204_104805.png}
+    \includegraphics[width=0.3\linewidth]{Graphiken/exp/uNet/unwgt/msk_104805_FWIS-PLI_230206113204_104805.png}
+    \includegraphics[width=0.3\linewidth]{Graphiken/exp/uNet/unwgt/ovl_104805_FWIS-PLI_230206113204_104805.png}
+    \caption{UNet Prediction}
+    \label{fig:unwgt_Unet_pred}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\linewidth]{Graphiken/exp/uNet/wgt/orig_104805_FWIS-PLI_230206113204_104805.png}
+    \includegraphics[width=0.3\linewidth]{Graphiken/exp/uNet/wgt/msk_104805_FWIS-PLI_230206113204_104805.png}
+    \includegraphics[width=0.3\linewidth]{Graphiken/exp/uNet/wgt/ovl_104805_FWIS-PLI_230206113204_104805.png}
+    \caption{UNet Prediction}
+    \label{fig:wgt_Unet_pred}
+\end{figure}
+
+
+
+
+
+Das Segment Anything Model \cite{SAMKirillov2023} wurde wie in \tdo{ref experimente} beschreiebn mit verschiedenen Konfigurationen verwendet.
+Ohne Nach-trainieren des Netzwerkes wird eine mIoU von \textcolor{red}{xxx} erreicht. Mit einem Nach-trainieren über \textcolor{red}{xxx} Epochen kann die mittlere Übereinstimmung der Klassen auf \textcolor{red}{xx} erhöht werden. 
+
+Für die Anwendung des Models als zero-shot variante , \tdo{ref img}, ist gut zu sehen, dass \textcolor{red}{ welche defekte gut/schlecht klassiert}. 
+Im Vergleich dazu ist das Nach-trainierte Netzwerk zu sehen. Der \textcolor{red}{welcher defekt} wird hier sehr nahe an dem annotierten Grundwissen der Daten. ...
+\fi
+
+
+
+\subsection{DINO}
+    \begin{itemize}
+        \item Beschreibung was genau analysiert wurde
+        \item welche Fragestellung damit abgedeckt werden soll
+        \item Aufschlüsseln was alles miteinader gekoppelt wurde (Transformationen, Daten)
+        \item Graphen und Ergebnisse Darstellen 
+        \item Graphen beschreiben
+        \item Ergebnisse(Bilder) von Prediction beschreiben
+        \item Beschreiben wo passiert das gut, wo schlecht (Analyse der einzelenen Defekte, Positon, lokalität
+    \end{itemize}
+
+\subsection{DINO + STEGO}
+    \begin{itemize}
+        \item Beschreibung was genau analysiert wurde
+        \item welche Fragestellung damit abgedeckt werden soll
+        \item Aufschlüsseln was alles miteinader gekoppelt wurde (Transformationen, Daten)
+        \item Graphen und Ergebnisse Darstellen 
+        \item Graphen beschreiben
+        \item Ergebnisse(Bilder) von Prediction beschreiben
+        \item Beschreiben wo passiert das gut, wo schlecht (Analyse der einzelenen Defekte, Positon, lokalität
+    \end{itemize}
+
+\subsection{Vergleich Modelle}
+    \begin{itemize}
+        \item SAM vs UNet
+        \item Dino vs DINO + STEGO
+        \item unsupervised vs supervised   
+        \item vgl einzelne Modelle  
+    \end{itemize}
